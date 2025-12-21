@@ -1,0 +1,14 @@
+{
+  "name": "xingtong-fan-site",
+  "version": "1.0.0",
+  "description": "星瞳粉丝网站 - 倒计时",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

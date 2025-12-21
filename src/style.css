@@ -1,0 +1,535 @@
+/* ========================================
+   星瞳粉丝网站 - V3 精简设计
+   ======================================== */
+
+:root {
+  /* 强调色 */
+  --rose: #f472b6;
+  --violet: #a78bfa;
+  --cyan: #22d3ee;
+  --amber: #fbbf24;
+
+  /* 文字 */
+  --text-primary: #fff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.4);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-primary);
+  background: #0a0a14;
+}
+
+/* ========================================
+   背景 - 优化显示人物
+   ======================================== */
+
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  background-image: url('/bg.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+/* 渐变叠加 - 只在底部加深，保持脸部清晰 */
+.glass-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(180deg,
+      rgba(10, 10, 20, 0.2) 0%,
+      rgba(10, 10, 20, 0.1) 30%,
+      rgba(10, 10, 20, 0.5) 70%,
+      rgba(10, 10, 20, 0.85) 100%);
+}
+
+/* 粒子 */
+.particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  bottom: -10px;
+  background: linear-gradient(135deg, var(--rose), var(--violet));
+  border-radius: 50%;
+  animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.4;
+  }
+
+  90% {
+    opacity: 0.1;
+  }
+
+  100% {
+    transform: translateY(-100vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+/* ========================================
+   主容器 - 全屏布局
+   ======================================== */
+
+.main-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+}
+
+/* ========================================
+   头部 - 移到左上角
+   ======================================== */
+
+.header {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  text-align: left;
+  animation: fadeIn 0.8s ease-out;
+  z-index: 10;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  background: linear-gradient(135deg, #fff 0%, var(--rose) 50%, var(--violet) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 6s ease-in-out infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title-star {
+  font-size: 0.5em;
+  -webkit-text-fill-color: var(--violet);
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.title-star:last-child {
+  animation-delay: 1s;
+  -webkit-text-fill-color: var(--rose);
+}
+
+@keyframes twinkle {
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes gradientShift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   倒计时网格 - 左右两侧布局
+   ======================================== */
+
+.countdown-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 1.25rem;
+  width: 100%;
+  align-items: center;
+}
+
+/* 左侧两张卡片 */
+.countdown-card:nth-child(1),
+.countdown-card:nth-child(2) {
+  grid-column: 1;
+}
+
+/* 右侧两张卡片 */
+.countdown-card:nth-child(3),
+.countdown-card:nth-child(4) {
+  grid-column: 3;
+}
+
+/* ========================================
+   卡片 - 精简玻璃风格
+   ======================================== */
+
+.countdown-card {
+  position: relative;
+  width: 200px;
+  padding: 1.25rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation: slideUp 0.6s ease-out backwards;
+}
+
+.countdown-card:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.countdown-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.countdown-card:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.countdown-card:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 顶部彩色条 */
+.countdown-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  transition: width 0.3s ease;
+}
+
+.countdown-card[data-accent="rose"]::before {
+  background: var(--rose);
+}
+
+.countdown-card[data-accent="violet"]::before {
+  background: var(--violet);
+}
+
+.countdown-card[data-accent="cyan"]::before {
+  background: var(--cyan);
+}
+
+.countdown-card[data-accent="amber"]::before {
+  background: var(--amber);
+}
+
+.countdown-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.countdown-card:hover::before {
+  width: 80%;
+}
+
+/* 移除 card-glow 效果 */
+.card-glow {
+  display: none;
+}
+
+.card-content {
+  position: relative;
+}
+
+/* 卡片头部 */
+.card-header {
+  text-align: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.card-badge {
+  display: none;
+}
+
+.card-info {
+  display: block;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.15rem;
+}
+
+/* 标题颜色跟随主题 */
+.countdown-card[data-accent="rose"] .card-title {
+  color: var(--rose);
+}
+
+.countdown-card[data-accent="violet"] .card-title {
+  color: var(--violet);
+}
+
+.countdown-card[data-accent="cyan"] .card-title {
+  color: var(--cyan);
+}
+
+.countdown-card[data-accent="amber"] .card-title {
+  color: var(--amber);
+}
+
+.card-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* 倒计时显示 */
+.countdown-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.countdown-unit {
+  text-align: center;
+  padding: 0.5rem 0.35rem;
+}
+
+.countdown-separator {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  padding-bottom: 1rem;
+  font-weight: 300;
+}
+
+.countdown-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.countdown-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+}
+
+/* 状态 */
+.countdown-status {
+  margin-top: 0.75rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.countdown-status.is-today {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(244, 114, 182, 0.2));
+  color: var(--amber);
+}
+
+/* ========================================
+   底部链接 - 固定右下角
+   ======================================== */
+
+.footer {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  animation: fadeIn 0.8s ease-out 0.4s backwards;
+  z-index: 10;
+}
+
+.bili-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.bili-link:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.bili-link:hover .bili-arrow {
+  transform: translateX(3px);
+}
+
+.bili-icon {
+  width: 18px;
+  height: 18px;
+  color: #fb7299;
+}
+
+.bili-arrow {
+  transition: transform 0.2s ease;
+  color: var(--text-secondary);
+}
+
+/* ========================================
+   响应式
+   ======================================== */
+
+@media (max-width: 1200px) {
+  .countdown-card {
+    width: 180px;
+    padding: 1rem;
+  }
+
+  .countdown-value {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .main-container {
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 2rem;
+  }
+
+  .countdown-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .countdown-card {
+    width: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    position: static;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .main-container {
+    padding: 1.5rem;
+  }
+
+  .countdown-grid {
+    gap: 0.75rem;
+  }
+
+  .countdown-card {
+    width: 45%;
+    min-width: 140px;
+  }
+
+  .footer {
+    position: static;
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .countdown-card {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .countdown-value {
+    font-size: 1.2rem;
+  }
+}
