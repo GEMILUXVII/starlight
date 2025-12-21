@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================
+   星瞳粉丝网站 - V3 精简设计
+   ======================================== */
+
+:root {
+  /* 强调色 */
+  --rose: #f472b6;
+  --violet: #a78bfa;
+  --cyan: #22d3ee;
+  --amber: #fbbf24;
+
+  /* 文字 */
+  --text-primary: #fff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.4);
+}
+
+/* ========================================
+   背景 - 优化显示人物
+   ======================================== */
+
+.bg-layer {
+  @apply fixed inset-0 -z-30 bg-cover bg-top bg-no-repeat;
+  background-image: url('/bg.png');
+}
+
+/* 渐变叠加 - 只在底部加深，保持脸部清晰 */
+.glass-overlay {
+  @apply fixed inset-0 -z-20;
+  background:
+    linear-gradient(180deg,
+      rgba(10, 10, 20, 0.2) 0%,
+      rgba(10, 10, 20, 0.1) 30%,
+      rgba(10, 10, 20, 0.5) 70%,
+      rgba(10, 10, 20, 0.85) 100%);
+}
+
+/* 噪点纹理 - 增加胶片质感 */
+body::before {
+  content: "";
+  @apply fixed inset-0 z-[100] pointer-events-none opacity-50 mix-blend-overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.07'/%3E%3C/svg%3E");
+}
+
+/* 粒子 */
+.particles {
+  @apply fixed inset-0 -z-10 pointer-events-none overflow-hidden;
+}
+
+.particle {
+  @apply absolute top-0 left-0 rounded-full opacity-30 pointer-events-none will-change-transform;
+}
+
+.confetti {
+  @apply absolute top-0 left-0 opacity-80 pointer-events-none will-change-transform;
+}
+
+/* ========================================
+   头部 - 移到左上角
+   ======================================== */
+
+.header {
+  @apply relative self-start flex flex-col items-center z-10 animate-[fadeIn_0.8s_ease-out];
+}
+
+.title {
+  @apply text-4xl font-bold tracking-[0.15em] flex items-center gap-2;
+  background: linear-gradient(135deg, #fff 0%, var(--rose) 50%, var(--violet) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 6s ease-in-out infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.title-star {
+  @apply text-[0.5em] animate-[twinkle_2s_ease-in-out_infinite];
+  -webkit-text-fill-color: var(--violet);
+}
+
+.title-star:last-child {
+  @apply delay-1000;
+  -webkit-text-fill-color: var(--rose);
+}
+
+@keyframes twinkle {
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes gradientShift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.subtitle {
+  @apply text-xs tracking-[0.3em] uppercase mt-1;
+  color: var(--text-muted);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   底部链接 - 固定右下角
+   ======================================== */
+
+.footer {
+  @apply relative self-end z-10 animate-[fadeIn_0.8s_ease-out_0.4s_backwards];
+}
+
+.bili-link {
+  @apply inline-flex items-center gap-2.5 py-2.5 px-5 rounded-full text-white no-underline font-medium text-sm transition-all duration-300;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.bili-link:hover {
+  @apply -translate-y-0.5;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.bili-link:hover .bili-arrow {
+  @apply translate-x-1;
+}
+
+.bili-icon {
+  @apply w-[18px] h-[18px] text-[#fb7299];
+}
+
+.bili-arrow {
+  @apply transition-transform duration-200;
+  color: var(--text-secondary);
+}
+
+/* ========================================
+   响应式
+   ======================================== */
+
+@media (max-width: 768px) {
+  .header {
+    @apply mb-4 self-center text-center;
+  }
+
+  .footer {
+    @apply static text-center mt-6 self-center;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    @apply text-3xl;
+  }
+}
