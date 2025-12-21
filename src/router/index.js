@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import TimelineView from '../views/TimelineView.vue'
+import MusicView from '../views/MusicView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -14,6 +15,11 @@ const router = createRouter({
       path: '/timeline',
       name: 'timeline',
       component: TimelineView
+    },
+    {
+      path: '/music',
+      name: 'music',
+      component: MusicView
     }
   ]
 })
