@@ -62,6 +62,18 @@ body {
       rgba(10, 10, 20, 0.85) 100%);
 }
 
+/* 噪点纹理 - 增加胶片质感 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.07'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+}
+
 /* 粒子 */
 .particles {
   position: fixed;
@@ -73,31 +85,25 @@ body {
 
 .particle {
   position: absolute;
-  bottom: -10px;
-  background: linear-gradient(135deg, var(--rose), var(--violet));
+  top: 0;
+  left: 0;
   border-radius: 50%;
-  animation: floatUp linear infinite;
+  opacity: 0.3;
+  pointer-events: none;
+  /* 移除动画，由 JS 控制 transform */
+  will-change: transform;
 }
 
-@keyframes floatUp {
-  0% {
-    transform: translateY(0) translateX(0);
-    opacity: 0;
-  }
-
-  10% {
-    opacity: 0.4;
-  }
-
-  90% {
-    opacity: 0.1;
-  }
-
-  100% {
-    transform: translateY(-100vh) translateX(20px);
-    opacity: 0;
-  }
+.confetti {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.8;
+  pointer-events: none;
+  will-change: transform;
 }
+
+/* 移除 floatUp keyframes */
 
 /* ========================================
    主容器 - 全屏布局
@@ -106,8 +112,7 @@ body {
 .main-container {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   padding: 2rem;
 }
 
@@ -116,9 +121,12 @@ body {
    ======================================== */
 
 .header {
-  position: fixed;
-  top: 2rem;
-  left: 2rem;
+  position: relative;
+  /* top/left removed */
+  top: auto;
+  left: auto;
+  align-self: flex-start;
+  /* 左对齐 */
   text-align: left;
   animation: fadeIn 0.8s ease-out;
   z-index: 10;
@@ -200,11 +208,14 @@ body {
 
 .countdown-grid {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(50vw, 1fr) auto;
   grid-template-rows: auto auto;
-  gap: 1.25rem;
+  gap: 1rem 1.25rem;
+  /* 减少行距 gap: row-gap column-gap */
   width: 100%;
   align-items: center;
+  margin: auto 0;
+  /* 自动垂直居中于剩余空间 */
 }
 
 /* 左侧两张卡片 */
@@ -226,14 +237,42 @@ body {
 .countdown-card {
   position: relative;
   width: 200px;
-  padding: 1.25rem;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  animation: slideUp 0.6s ease-out backwards;
+  padding: 1.25rem 1.25rem;
+  /* 减少卡片内边距 */
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.03);
+  /* 使用阴影代替边框，更细腻 */
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 20px 40px -10px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  animation: slideUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) backwards;
+  overflow: hidden;
+  /* 用于剪裁光效 */
+  /* 3D 变换原点 */
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* 光斑效果层 */
+.countdown-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y),
+      rgba(255, 255, 255, 0.1),
+      transparent 40%);
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.countdown-card:hover::after {
+  opacity: 1;
 }
 
 .countdown-card:nth-child(1) {
@@ -294,9 +333,12 @@ body {
 }
 
 .countdown-card:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 30px 60px -12px rgba(0, 0, 0, 0.4),
+    0 0 20px -5px rgba(255, 255, 255, 0.1);
 }
 
 .countdown-card:hover::before {
@@ -378,11 +420,15 @@ body {
 }
 
 .countdown-value {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 2.2rem;
+  font-weight: 200;
+  /* 极细字重，高级感来源 */
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
-  line-height: 1;
+  line-height: 0.9;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .countdown-label {
@@ -413,9 +459,12 @@ body {
    ======================================== */
 
 .footer {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
+  position: relative;
+  /* bottom/right removed */
+  bottom: auto;
+  right: auto;
+  align-self: flex-end;
+  /* 右对齐 */
   animation: fadeIn 0.8s ease-out 0.4s backwards;
   z-index: 10;
 }
@@ -493,10 +542,11 @@ body {
 }
 
 @media (max-width: 768px) {
+
+  /* 移动端恢复 */
   .header {
-    position: static;
-    text-align: center;
     margin-bottom: 1rem;
+    align-self: center;
   }
 
   .main-container {
@@ -516,6 +566,7 @@ body {
     position: static;
     text-align: center;
     margin-top: 1.5rem;
+    align-self: center;
   }
 }
 
