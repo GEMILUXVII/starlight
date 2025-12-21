@@ -155,6 +155,14 @@ onMounted(() => {
       >
         Videos
       </RouterLink>
+      <div class="w-px h-4 bg-white/20 my-auto"></div>
+      <RouterLink 
+        to="/about" 
+        class="nav-link text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-widest"
+        active-class="!text-rose-400 font-bold glow"
+      >
+        About
+      </RouterLink>
     </div>
   </nav>
 
