@@ -23,8 +23,8 @@
           </svg>
           <h2 class="text-2xl font-bold text-white">网站说明</h2>
         </div>
-        <div class="text-white/80 space-y-3 leading-relaxed">
-          <p>本站是专为虚拟偶像<span class="text-rose-400 font-semibold">星瞳</span>而创建的非官方粉丝站，旨在收录星瞳的精彩瞬间、重要历程和优秀作品。</p>
+        <div class="text-white/90 space-y-3 leading-relaxed">
+          <p>本站专为虚拟偶像<span class="text-rose-400 font-semibold">星瞳</span>而创建的非官方粉丝网站，旨在收录星瞳的精彩作品。</p>
           <p>网站采用现代化技术栈（Vue 3 + Tailwind CSS）构建，提供流畅的浏览体验和美观的视觉呈现。</p>
         </div>
       </div>
@@ -37,18 +37,18 @@
           </svg>
           <h2 class="text-2xl font-bold text-white">版权声明</h2>
         </div>
-        <div class="text-white/80 space-y-4 leading-relaxed">
+        <div class="text-white/90 space-y-4 leading-relaxed">
           <div>
             <h3 class="text-white font-semibold mb-2">· 视频内容</h3>
-            <p class="text-sm">本站所有嵌入视频均使用 <span class="text-cyan-400">Bilibili 官方播放器</span>，内容版权归<span class="text-rose-400 font-semibold">星瞳官方</span>及相应创作者所有。本站仅提供展示平台，不存储任何视频文件。</p>
+            <p class="text-sm text-white/85">本站所有嵌入视频均使用 <span class="text-cyan-400">Bilibili 官方播放器</span>，内容版权归<span class="text-rose-400 font-semibold">星瞳官方</span>及相应创作者所有。本站仅提供展示平台，不存储任何视频文件，不涉及任何版权侵权行为。</p>
           </div>
           <div>
             <h3 class="text-white font-semibold mb-2">· 历史资料</h3>
-            <p class="text-sm">"大事记"页面内容引用自 <a href="https://zh.moegirl.org.cn/星瞳" target="_blank" class="text-rose-400 hover:text-rose-300 underline">萌娘百科</a>，内容使用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank" class="text-cyan-400 hover:text-cyan-300 underline">CC BY-NC-SA 3.0 CN</a> 协议授权。</p>
+            <p class="text-sm text-white/85">"大事记"页面内容引用自 <a href="https://zh.moegirl.org.cn/星瞳" target="_blank" class="text-rose-400 hover:text-rose-300 underline">萌娘百科</a>，内容使用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank" class="text-cyan-400 hover:text-cyan-300 underline">CC BY-NC-SA 3.0 CN</a> 协议授权。</p>
           </div>
           <div>
             <h3 class="text-white font-semibold mb-2">· 图片素材</h3>
-            <p class="text-sm">网站背景图片及封面图片均来源于网络公开资源，版权归原作者所有。如有侵权，请联系删除。</p>
+            <p class="text-sm text-white/85">网站背景图片及封面图片均来源于网络公开资源，版权归原作者所有。如有侵权，请及时联系，我们将立即删除。</p>
           </div>
         </div>
       </div>
@@ -61,11 +61,11 @@
           </svg>
           <h2 class="text-2xl font-bold text-white">免责声明</h2>
         </div>
-        <div class="text-white/80 space-y-3 leading-relaxed text-sm">
-          <p>• 本站为<span class="text-rose-400">非盈利性</span>粉丝网站，不进行任何商业活动。</p>
-          <p>• 本站与星瞳官方、腾讯或任何官方机构<span class="text-amber-400">无直接关联</span>。</p>
-          <p>• 本站内容仅供粉丝交流学习，不代表官方立场。</p>
-          <p>• 若本站内容侵犯了您的权益，请及时联系我们，我们将尽快处理。</p>
+        <div class="text-white/90 space-y-3 leading-relaxed">
+          <p>· 本站为<span class="text-rose-400">非营利性</span>粉丝网站，不进行任何商业活动。</p>
+          <p>· 本站与星瞳官方、腾讯或任何官方机构<span class="text-amber-400">无直接关联</span>。</p>
+          <p>· 本站内容仅供粉丝交流学习，不代表官方立场。</p>
+          <p>· 若本站内容侵犯了您的权益，请及时联系我们，我们将尽快处理。</p>
         </div>
       </div>
 
@@ -77,14 +77,14 @@
           </svg>
           <h2 class="text-2xl font-bold text-white">创建者信息</h2>
         </div>
-        <div class="text-white/80 space-y-4">
+        <div class="text-white/90 space-y-4">
           <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-rose-400 to-violet-400 flex items-center justify-center text-white text-2xl font-bold">
-              X
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-rose-400 to-violet-400 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+              G
             </div>
             <div>
-              <p class="text-lg font-semibold text-white">小星星粉丝</p>
-              <p class="text-sm text-white/60">Xingtong Enthusiast</p>
+              <p class="text-lg font-semibold text-white">GEMILUX</p>
+              <p class="text-sm text-white/70">Fan Site Creator</p>
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
