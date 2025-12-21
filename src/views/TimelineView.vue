@@ -174,7 +174,7 @@ const eventsByYear = computed(() => {
 
 <template>
   <div class="timeline-container w-full max-w-2xl mx-auto py-10 px-4">
-    <header class="header text-center mb-12 animate-[fadeIn_0.8s_ease-out]">
+    <header class="header text-center mb-12">
       <h1 class="title justify-center">
         <span class="title-star">✦</span>
         大事记
@@ -185,7 +185,7 @@ const eventsByYear = computed(() => {
 
     <div class="relative space-y-12">
       <!-- Year Group -->
-      <div v-for="group in eventsByYear" :key="group.year" class="year-group animate-[fadeIn_0.8s_ease-out]">
+      <div v-for="group in eventsByYear" :key="group.year" class="year-group">
         <div class="year-header sticky top-24 z-20 flex items-center mb-8 ml-[-1rem]">
           <span class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-violet-400 opacity-20">{{ group.year }}</span>
           <div class="h-px bg-white/10 flex-grow ml-4"></div>
@@ -204,7 +204,7 @@ const eventsByYear = computed(() => {
             ></div>
 
             <!-- Card -->
-            <div class="timeline-card p-5 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-rose-500/10 hover:border-white/20">
+            <div class="timeline-card p-5 rounded-2xl bg-black/30 backdrop-blur-md border border-white/10 hover:bg-black/40 transition-colors duration-300 hover:shadow-lg hover:shadow-rose-500/10 hover:border-white/20">
               <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 mb-2">
                 <h3 class="text-xl font-bold text-white group-hover:text-rose-300 transition-colors">{{ item.title }}</h3>
                 <span class="text-xs font-mono text-white/50 tracking-wider bg-white/5 px-2 py-0.5 rounded">{{ item.displayDate }}</span>

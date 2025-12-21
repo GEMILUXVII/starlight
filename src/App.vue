@@ -152,11 +152,7 @@ onMounted(() => {
 
   <main class="main-container min-h-screen flex flex-col p-8 pt-24">
     <!-- Router View -->
-    <RouterView v-slot="{ Component }">
-      <transition name="fade" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </RouterView>
+    <RouterView />
     
     <footer class="footer mt-auto pt-8">
       <a href="https://space.bilibili.com/401315430" target="_blank" rel="noopener" class="bili-link">
