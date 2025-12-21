@@ -153,7 +153,7 @@ onMounted(() => {
         class="nav-link text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-widest"
         active-class="!text-rose-400 font-bold glow"
       >
-        Music
+        Videos
       </RouterLink>
     </div>
   </nav>

@@ -8,58 +8,58 @@ const musicList = [
     type: '原创曲',
     date: '2022-11-04',
     bvid: 'BV1MW4y177ZG',
-    cover: 'http://i2.hdslb.com/bfs/archive/0c9e6d3c4d5e5f5e5f5e5f5e5f5e5f5e5f5e5f5.jpg',
+    cover: 'https://imgbed.aspchang.cn/file/46fc603768bd78de2b47c50607a28ee9de36c0ad.jpg',
     desc: '首张迷你专辑《星·引力》主打曲',
     accent: 'rose'
   },
   {
     id: 2,
-    title: 'NEW STAR',
-    type: '合作',
-    date: '2021-08-12',
-    bvid: 'BV1kL411H7eQ',
-    cover: '',
-    desc: '携手张欣尧献唱2021QQ炫舞NEW STAR音乐节主题曲',
+    title: '神明少女舞',
+    type: '舞蹈',
+    date: '2022-06-28',
+    bvid: 'BV1HS4y1p7GR',
+    cover: 'https://imgbed.aspchang.cn/file/image(4).png',
+    desc: '神明少女舞，但是星瞳',
     accent: 'blue'
   },
   {
     id: 3,
-    title: 'HEA!狮舞',
+    title: '刀马旦',
     type: '合作',
-    date: '2021-12-03',
-    bvid: 'BV1mR4y1K7Qp',
-    cover: '',
-    desc: '与Yamy郭颖合作单曲',
+    date: '2023-04-30',
+    bvid: 'BV1d14y1o7JZ',
+    cover: 'https://imgbed.aspchang.cn/file/image(3).png',
+    desc: '星瞳✨兰音共献刀马旦，耍花枪舞翻全场！',
     accent: 'red'
   },
   {
     id: 4,
-    title: '花宸令',
-    type: '主题曲',
-    date: '2022-05-21',
-    bvid: 'BV1nS4y1p7cm',
-    cover: '',
-    desc: 'QQ炫舞14周年主题曲',
+    title: '屏中人',
+    type: '原创',
+    date: '2023-10-29',
+    bvid: 'BV18N41137XE',
+    cover: 'https://imgbed.aspchang.cn/file/image(2).png',
+    desc: '屏中无限近的你我，虚拟与现实的链接',
     accent: 'pink'
   },
   {
     id: 5,
-    title: '我们的时代',
-    type: '合作',
-    date: '2023-02-05',
-    bvid: 'BV1H24y1n7yv',
-    cover: '',
-    desc: '合作曲',
+    title: '星游记',
+    type: 'VLOG',
+    date: '2025-03-10',
+    bvid: 'BV1hPRGYcE53',
+    cover: 'https://imgbed.aspchang.cn/file/image(1).png',
+    desc: '冬季午后与瞳瞳一起漫步在北京什刹海！',
     accent: 'violet'
   },
   {
     id: 6,
-    title: 'SQUEEZE',
-    type: '原创曲',
-    date: '2025-06-06',
-    bvid: 'BV1tz421B7ug',
-    cover: '',
-    desc: 'X.PGM官方MV',
+    title: 'Bad Apple',
+    type: '翻唱',
+    date: '2025-11-07',
+    bvid: 'BV1JR11BVEzz',
+    cover: 'https://imgbed.aspchang.cn/file/image.png',
+    desc: '镇站之宝禁忌填词！！25 年了还有翻唱？',
     accent: 'cyan'
   }
 ]
@@ -80,10 +80,10 @@ const closeVideo = () => {
     <header class="header text-center mb-12">
       <h1 class="title justify-center">
         <span class="title-star">✦</span>
-        音乐作品
+        作品选
         <span class="title-star">✦</span>
       </h1>
-      <p class="subtitle">MUSIC & SONGS</p>
+      <p class="subtitle">VIDEOS & PERFORMANCES</p>
     </header>
 
     <!-- Music Grid -->
@@ -95,23 +95,34 @@ const closeVideo = () => {
         @click="openVideo(music)"
       >
         <div class="relative overflow-hidden rounded-2xl bg-black/30 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-rose-500/20">
-          <!-- Cover Image Placeholder -->
-          <div class="aspect-video bg-gradient-to-br from-rose-500/20 to-violet-500/20 flex items-center justify-center">
-            <svg class="w-16 h-16 text-white/40 group-hover:text-white/60 transition-colors" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
-            </svg>
+          <!-- Cover Image -->
+          <div class="aspect-video relative overflow-hidden">
+            <img 
+              v-if="music.cover" 
+              :src="music.cover" 
+              :alt="music.title"
+              class="w-full h-full object-cover"
+            />
+            <div 
+              v-else
+              class="w-full h-full bg-gradient-to-br from-rose-500/20 to-violet-500/20 flex items-center justify-center"
+            >
+              <svg class="w-16 h-16 text-white/40 group-hover:text-white/60 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
+              </svg>
+            </div>
           </div>
 
           <!-- Info -->
-          <div class="p-5">
+          <div class="p-5 flex flex-col" style="min-height: 140px">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xl font-bold text-white group-hover:text-rose-300 transition-colors">{{ music.title }}</h3>
-              <span :class="`text-xs px-2 py-1 rounded-full bg-${music.accent}-500/20 text-${music.accent}-300 border border-${music.accent}-400/30`">
+              <span :class="`text-xs px-3 py-1 rounded-full bg-${music.accent}-500/40 text-white border-2 border-${music.accent}-400/60 whitespace-nowrap font-semibold shadow-lg`">
                 {{ music.type }}
               </span>
             </div>
-            <p class="text-sm text-white/60 mb-3">{{ music.desc }}</p>
-            <div class="flex items-center justify-between text-xs text-white/40">
+            <p class="text-sm text-white/80 mb-3 line-clamp-2">{{ music.desc }}</p>
+            <div class="flex items-center justify-between text-xs text-white/60 mt-auto">
               <span>{{ music.date }}</span>
               <span class="flex items-center gap-1">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
