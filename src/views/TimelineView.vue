@@ -186,9 +186,9 @@ const eventsByYear = computed(() => {
     <div class="relative space-y-12">
       <!-- Year Group -->
       <div v-for="group in eventsByYear" :key="group.year" class="year-group">
-        <div class="year-header sticky top-24 z-20 flex items-center mb-8 ml-[-1rem]">
-          <span class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-violet-400 opacity-20">{{ group.year }}</span>
-          <div class="h-px bg-white/10 flex-grow ml-4"></div>
+        <div class="year-header sticky top-24 z-20 flex items-center mb-8">
+          <span class="year-text text-5xl font-black text-white/80 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 shadow-lg">{{ group.year }}</span>
+          <div class="h-px bg-gradient-to-r from-white/20 to-transparent flex-grow ml-4"></div>
         </div>
 
         <div class="relative border-l border-white/10 ml-4 md:ml-10 pl-8 md:pl-10 space-y-10">
