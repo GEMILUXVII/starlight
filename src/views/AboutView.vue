@@ -1,117 +1,180 @@
 <script setup>
-// About page - Left accent border style with enhanced text visibility
+import { ref, onMounted } from 'vue'
+
+// Bilibili User Data
+const biliUser = ref({
+  uid: '403039446',
+  name: 'GEMILUX', 
+  face: 'https://i0.hdslb.com/bfs/face/4a86036329c0b115b9c05423f03b22fa65a88bf0.jpg', // Real avatar fetched via CLI
+  sign: ''
+})
+
+const fetchBiliUser = async () => {
+  try {
+    // Try to update with latest data using a CORS proxy
+    // Using corsproxy.io which is often more stable for Bilibili
+    const response = await fetch(`https://corsproxy.io/?${encodeURIComponent('https://api.bilibili.com/x/space/acc/info?mid=403039446')}`)
+    const data = await response.json()
+    
+    if (data.code === 0) {
+      biliUser.value.name = data.data.name
+      biliUser.value.face = data.data.face
+      biliUser.value.sign = data.data.sign
+    }
+  } catch (error) {
+    console.error('Failed to fetch Bilibili user info, falling back to defaults:', error)
+  }
+}
+
+onMounted(() => {
+  fetchBiliUser()
+})
 </script>
 
 <template>
-  <div class="about-container w-full max-w-2xl mx-auto py-16 px-6">
-    <!-- Header -->
-    <header class="text-center mb-16">
-      <h1 class="main-title text-5xl font-light tracking-[0.2em] text-white mb-4">
-        关于
-      </h1>
-      <div class="w-20 h-0.5 bg-rose-400 mx-auto"></div>
-    </header>
+  <div class="about-container relative w-full min-h-screen overflow-hidden">
+    <!-- Diagonal Overlay -->
+    <div class="diagonal-bg absolute inset-0 bg-black/60 backdrop-blur-xl"></div>
 
-    <!-- Content Sections with left accent border -->
-    <div class="space-y-12">
-      
-      <!-- Section 1: Intro -->
-      <section class="section-block pl-6 border-l-2 border-rose-400">
-        <p class="text-white text-xl leading-relaxed font-medium section-text">
-          这是一个为虚拟偶像<span class="text-rose-400">星瞳</span>创建的非官方粉丝网站。
-        </p>
-        <p class="text-white/90 text-lg leading-relaxed mt-3 section-text">
-          在这里，你可以看到倒计时、大事记、精选作品，以及更多关于星瞳的一切。
-        </p>
-      </section>
-
-      <!-- Section 2: Copyright -->
-      <section class="section-block pl-6 border-l-2 border-cyan-400">
-        <h2 class="text-cyan-400 text-sm tracking-[0.2em] uppercase mb-4 font-bold">版权声明</h2>
-        <div class="space-y-3 text-white/90 text-base leading-relaxed section-text">
-          <p>视频内容使用 <span class="text-cyan-300 font-medium">Bilibili 官方播放器</span>嵌入，版权归星瞳官方及创作者所有。</p>
-          <p>大事记内容引用自 <a href="https://zh.moegirl.org.cn/星瞳" target="_blank" class="text-rose-400 hover:text-rose-300 underline">萌娘百科</a>，采用 CC BY-NC-SA 3.0 CN 协议。</p>
-          <p>图片素材来源于网络，如有侵权请联系删除。</p>
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-6 py-20 min-h-screen flex flex-col">
+      <!-- Header -->
+      <header class="mb-20 animate-slide-in">
+        <h1 class="text-7xl md:text-8xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/20 uppercase">
+          About
+        </h1>
+        <div class="flex items-center gap-4 mt-2 ml-2">
+          <div class="h-1 w-20 bg-rose-500"></div>
+          <p class="text-lg font-bold tracking-[0.2em] text-white/80 uppercase">The Project</p>
         </div>
-      </section>
+      </header>
 
-      <!-- Section 3: Disclaimer -->
-      <section class="section-block pl-6 border-l-2 border-amber-400">
-        <h2 class="text-amber-400 text-sm tracking-[0.2em] uppercase mb-4 font-bold">免责声明</h2>
-        <p class="text-white/90 text-base leading-relaxed section-text">
-          本站为<span class="text-rose-400 font-medium">非营利性</span>粉丝网站，与星瞳官方、腾讯或任何官方机构<span class="text-amber-400 font-medium">无直接关联</span>。
+      <!-- Main Content Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 flex-grow">
+        <!-- Left Col: Intro & Creator -->
+        <div class="md:col-span-5 space-y-12 animate-slide-up" style="animation-delay: 0.1s">
+          <div class="space-y-6">
+            <h2 class="text-3xl font-bold text-white flex gap-2 items-baseline">
+              <span class="text-rose-500">01.</span>
+              简介
+            </h2>
+            <p class="text-xl text-white/80 leading-relaxed font-light">
+              <span class="block text-2xl font-bold mb-4" style="color: #f472b6; text-shadow: 0 0 20px rgba(244, 114, 182, 0.5);">"我在！！！小星星，你慢慢说！！！"</span>
+              <span class="block">或许我暂时没看到，</span>
+              <span class="block">但谢谢你能把这些分享给我，</span>
+              <span class="block font-bold text-white mt-2 text-shadow-glow">你说的话很重要！！！</span>
+            </p>
+          </div>
+
+          <div class="space-y-6">
+            <h2 class="text-3xl font-bold text-white flex gap-2 items-baseline">
+              <span class="text-violet-500">02.</span>
+              开发者
+            </h2>
+            <a href="https://space.bilibili.com/403039446" target="_blank" class="flex items-center gap-5 group cursor-pointer hover:bg-white/5 p-4 -ml-4 rounded-xl transition-all duration-300">
+              <div class="relative">
+                <!-- Avatar container with pink ring on hover -->
+                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-transparent group-hover:border-rose-400 transition-all duration-300 shadow-lg group-hover:shadow-rose-500/20">
+                  <img :src="biliUser.face" :alt="biliUser.name" class="w-full h-full object-cover" referrerpolicy="no-referrer">
+                </div>
+                <!-- Bilibili Icon Badge -->
+                <div class="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-md">
+                   <svg class="w-4 h-4 text-[#FB7299]" fill="currentColor" viewBox="0 0 24 24"><path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.659.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906l-1.174 1.12z"/></svg>
+                </div>
+              </div>
+              <div>
+                <p class="text-2xl font-bold text-white group-hover:text-rose-400 transition-colors">{{ biliUser.name }}</p>
+                <p class="text-white/50 text-sm tracking-wider font-mono">UID: {{ biliUser.uid }}</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Col: Legal & Info -->
+        <div class="md:col-span-6 md:col-start-7 space-y-10 animate-slide-up" style="animation-delay: 0.2s">
+          <div class="p-8 border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-colors duration-300">
+            <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-4">LEGAL NOTICE</h3>
+            <div class="space-y-4 text-sm text-white/70 leading-relaxed">
+              <p>
+                <strong class="text-white">视频版权：</strong><br>
+                所有视频内容均使用 Bilibili 官方播放器嵌入，版权归属星瞳官方及原作者。
+              </p>
+              <p>
+                <strong class="text-white">资料来源：</strong><br>
+                大事记数据引用自 <a href="https://zh.moegirl.org.cn/星瞳" target="_blank" class="text-white underline hover:text-cyan-400">萌娘百科</a> (CC BY-NC-SA 3.0 CN)。
+              </p>
+            </div>
+          </div>
+
+          <div class="p-8 border-l-4 border-amber-500 bg-gradient-to-r from-amber-500/10 to-transparent">
+            <h3 class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2">DISCLAIMER</h3>
+            <p class="text-white/80 leading-relaxed">
+              本站为非营利性粉丝项目，<br>与官方无直接商业关联。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer (Kept same content, adjusted style) -->
+      <footer class="mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/40 animate-fade-in">
+        <p class="font-mono">© 2025 <a href="https://github.com/GEMILUXVII" target="_blank" class="text-white/60 hover:text-white transition-colors">GEMILUXVII</a></p>
+        <p class="font-mono">
+          POWERED BY VUE & <a href="https://github.com/GEMILUXVII/starlight" target="_blank" class="text-white/60 hover:text-white transition-colors">STARLIGHT</a>
         </p>
-      </section>
-
-      <!-- Section 4: Creator -->
-      <section class="section-block pl-6 border-l-2 border-violet-400">
-        <h2 class="text-violet-400 text-sm tracking-[0.2em] uppercase mb-4 font-bold">创建者</h2>
-        <a 
-          href="https://space.bilibili.com/403039446" 
-          target="_blank"
-          class="inline-flex items-center gap-3 group"
-        >
-          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-rose-500 to-violet-500 flex items-center justify-center text-white text-lg font-bold">
-            G
-          </div>
-          <div>
-            <span class="text-white text-lg font-medium group-hover:text-rose-400 transition-colors section-text">GEMILUX</span>
-            <p class="text-white/60 text-xs">@403039446</p>
-          </div>
-        </a>
-        <p class="text-white/60 text-sm mt-4 section-text">技术栈：Vue 3 · Tailwind CSS · Vite</p>
-      </section>
-
+      </footer>
     </div>
-
-    <!-- Footer -->
-    <footer class="mt-20 text-center space-y-1">
-      <p class="text-white/50 text-sm italic section-text">
-        © 2025 
-        <a href="https://github.com/GEMILUXVII" target="_blank" class="hover:text-white transition-colors">GEMILUXVII</a>
-      </p>
-      <p class="text-white/40 text-xs section-text">
-        Powered by Vue and 
-        <a href="https://github.com/GEMILUXVII/starlight" target="_blank" class="hover:text-white/70 transition-colors">Starlight</a>
-      </p>
-    </footer>
   </div>
 </template>
 
 <style scoped>
-.main-title {
-  text-shadow: 
-    0 0 20px rgba(0, 0, 0, 0.9),
-    0 0 40px rgba(0, 0, 0, 0.8),
-    0 4px 8px rgba(0, 0, 0, 0.9);
+.diagonal-bg {
+  /* 创建一个左上-右下的倾斜切割效果 */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+  background: linear-gradient(
+    115deg, 
+    rgba(0,0,0,0.95) 0%, 
+    rgba(0,0,0,0.8) 45%, 
+    rgba(244, 63, 94, 0.1) 45.1%, 
+    rgba(0,0,0,0.4) 100%
+  );
 }
 
-.section-text {
-  text-shadow: 
-    0 0 15px rgba(0, 0, 0, 0.95),
-    0 0 30px rgba(0, 0, 0, 0.9),
-    0 2px 4px rgba(0, 0, 0, 0.95),
-    1px 1px 2px rgba(0, 0, 0, 1);
+@media (min-width: 768px) {
+  .diagonal-bg {
+    /* 大屏幕下更明显的倾斜 */
+    background: linear-gradient(
+      115deg, 
+      rgba(0,0,0,0.9) 0%, 
+      rgba(0,0,0,0.85) 50%, 
+      transparent 50.1%, 
+      transparent 100%
+    );
+  }
 }
 
-.section-block {
-  animation: fadeIn 0.6s ease-out backwards;
+.animate-slide-in {
+  animation: slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
-.section-block:nth-child(1) { animation-delay: 0.1s; }
-.section-block:nth-child(2) { animation-delay: 0.15s; }
-.section-block:nth-child(3) { animation-delay: 0.2s; }
-.section-block:nth-child(4) { animation-delay: 0.25s; }
-.section-block:nth-child(5) { animation-delay: 0.3s; }
+.animate-slide-up {
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out 0.5s backwards;
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 </style>

@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { RouterView, RouterLink } from 'vue-router'
+import { Analytics } from '@vercel/analytics/vue'
 
 // 交互式粒子系统
 class ParticleSystem {
@@ -126,6 +127,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <Analytics />
   <div class="bg-layer"></div>
   <div class="glass-overlay"></div>
   
