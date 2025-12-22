@@ -146,7 +146,7 @@ const isHome = computed(() => route.name === 'home')
   
   <div 
     class="bg-layer fixed inset-0 -z-30 bg-cover bg-top bg-no-repeat transition-opacity duration-700 ease-in-out will-change-[opacity]"
-    style="background-image: url('/bg2.png')"
+    style="background-image: url('/bg2.png'); filter: brightness(0.5);"
     :class="isTimeline ? 'opacity-100' : 'opacity-0'"
   ></div>
   <div class="glass-overlay"></div>
