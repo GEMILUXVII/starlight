@@ -1,33 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
-// Bilibili User Data
+// Bilibili User Data (using local avatar to avoid CDN issues)
 const biliUser = ref({
   uid: '403039446',
   name: 'GEMILUX', 
-  face: 'https://i0.hdslb.com/bfs/face/4a86036329c0b115b9c05423f03b22fa65a88bf0.jpg', // Real avatar fetched via CLI
+  face: '/ava.jpg',
   sign: ''
-})
-
-const fetchBiliUser = async () => {
-  try {
-    // Try to update with latest data using a CORS proxy
-    // Using corsproxy.io which is often more stable for Bilibili
-    const response = await fetch(`https://corsproxy.io/?${encodeURIComponent('https://api.bilibili.com/x/space/acc/info?mid=403039446')}`)
-    const data = await response.json()
-    
-    if (data.code === 0) {
-      biliUser.value.name = data.data.name
-      biliUser.value.face = data.data.face
-      biliUser.value.sign = data.data.sign
-    }
-  } catch (error) {
-    console.error('Failed to fetch Bilibili user info, falling back to defaults:', error)
-  }
-}
-
-onMounted(() => {
-  fetchBiliUser()
 })
 </script>
 
