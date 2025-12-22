@@ -131,6 +131,7 @@ onMounted(() => {
 
 const route = useRoute()
 const isTimeline = computed(() => route.name === 'timeline')
+const isHome = computed(() => route.name === 'home')
 </script>
 
 <template>
@@ -187,7 +188,10 @@ const isTimeline = computed(() => route.name === 'timeline')
     </div>
   </nav>
 
-  <main class="main-container min-h-screen flex flex-col p-8 pt-24">
+  <main 
+    class="main-container flex flex-col p-8 pt-24"
+    :class="isHome ? 'h-screen overflow-hidden' : 'min-h-screen'"
+  >
     <!-- Router View -->
     <RouterView />
   </main>
