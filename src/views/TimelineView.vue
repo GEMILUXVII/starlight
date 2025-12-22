@@ -1,6 +1,28 @@
 <script setup>
 import { computed } from 'vue'
 
+// Accent color mapping for timeline dots
+const accentColors = {
+  rose: '#f472b6',
+  violet: '#a78bfa',
+  cyan: '#22d3ee',
+  amber: '#fbbf24',
+  blue: '#3b82f6',
+  emerald: '#10b981',
+  pink: '#ec4899',
+  red: '#ef4444',
+  orange: '#f97316',
+  teal: '#14b8a6',
+  purple: '#a855f7',
+  sky: '#0ea5e9',
+  yellow: '#eab308',
+  green: '#22c55e',
+  slate: '#64748b',
+  gray: '#9ca3af'
+}
+
+const getAccentColor = (accent) => accentColors[accent] || '#ffffff'
+
 const rawEvents = [
   // 2025
   { date: '2025-08-24', displayDate: '8月24日', title: '冰火夏梦季', desc: '在2025冰火夏梦季和雫るる一起表演歌曲《大展鸿图》。', accent: 'cyan' },
@@ -199,8 +221,8 @@ const eventsByYear = computed(() => {
           >
             <!-- Dot -->
             <div 
-              class="absolute -left-[calc(2rem_+_5px)] md:-left-[calc(2.5rem_+_5px)] top-1 w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)] transition-transform duration-300 group-hover:scale-150"
-              :class="`bg-${item.accent}-400 shadow-${item.accent}-400/50`"
+              class="absolute -left-[calc(2rem_+_5px)] md:-left-[calc(2.5rem_+_5px)] top-1 w-2.5 h-2.5 rounded-full transition-transform duration-300 group-hover:scale-150"
+              :style="{ backgroundColor: getAccentColor(item.accent), boxShadow: `0 0 10px ${getAccentColor(item.accent)}80` }"
             ></div>
 
             <!-- Card -->

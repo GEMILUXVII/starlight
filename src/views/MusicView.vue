@@ -1,6 +1,19 @@
 <script setup>
 import { ref } from 'vue'
 
+// Accent color mapping for badges
+const accentColors = {
+  rose: '#f472b6',
+  violet: '#a78bfa',
+  cyan: '#22d3ee',
+  amber: '#fbbf24',
+  blue: '#3b82f6',
+  pink: '#ec4899',
+  red: '#ef4444'
+}
+
+const getAccentColor = (accent) => accentColors[accent] || '#ffffff'
+
 const musicList = [
   {
     id: 1,
@@ -117,7 +130,13 @@ const closeVideo = () => {
           <div class="p-5 flex flex-col" style="min-height: 140px">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xl font-bold text-white group-hover:text-rose-300 transition-colors">{{ music.title }}</h3>
-              <span :class="`text-xs px-3 py-1 rounded-full bg-${music.accent}-500/40 text-white border-2 border-${music.accent}-400/60 whitespace-nowrap font-semibold shadow-lg`">
+              <span 
+                class="text-xs px-3 py-1 rounded-full text-white whitespace-nowrap font-semibold shadow-lg"
+                :style="{ 
+                  backgroundColor: `${getAccentColor(music.accent)}66`, 
+                  border: `2px solid ${getAccentColor(music.accent)}99` 
+                }"
+              >
                 {{ music.type }}
               </span>
             </div>
