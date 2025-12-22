@@ -195,66 +195,109 @@ const eventsByYear = computed(() => {
 </script>
 
 <template>
-  <div class="timeline-container w-full max-w-2xl mx-auto py-10 px-4">
-    <header class="header text-center mb-12">
-      <h1 class="title justify-center">
-        <span class="title-star">✦</span>
-        大事记
-        <span class="title-star">✦</span>
-      </h1>
-      <p class="subtitle">HISTORY & MEMORIES</p>
-    </header>
+    <div class="relative max-w-5xl mx-auto">
+      <!-- Minimalist Center Line -->
+      <div class="absolute left-6 md:left-1/2 top-12 bottom-0 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent md:-translate-x-1/2"></div>
 
-    <div class="relative space-y-12">
-      <!-- Year Group -->
-      <div v-for="group in eventsByYear" :key="group.year" class="year-group">
-        <div class="year-header sticky top-24 z-20 flex items-center mb-8">
-          <span class="year-text text-5xl font-black text-white/80 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 shadow-lg">{{ group.year }}</span>
-          <div class="h-px bg-gradient-to-r from-white/20 to-transparent flex-grow ml-4"></div>
+      <div v-for="group in eventsByYear" :key="group.year" class="mb-32 relative">
+        <!-- Minimal Year Header -->
+        <div class="sticky top-24 z-10 flex justify-start md:justify-center mb-16 pl-[4.5rem] md:pl-0 pointer-events-none">
+          <span class="text-8xl md:text-9xl font-black text-white/5 tracking-tighter select-none blur-[1px] mix-blend-overlay">
+            {{ group.year }}
+          </span>
         </div>
 
-        <div class="relative border-l border-white/10 ml-4 md:ml-10 pl-8 md:pl-10 space-y-10">
+        <div class="space-y-16">
           <div 
             v-for="(item, index) in group.events" 
             :key="index"
-            class="timeline-item relative group"
+            class="timeline-row flex flex-col md:flex-row items-baseline w-full group relative"
+            :class="{ 'md:flex-row-reverse': index % 2 !== 0 }"
           >
-            <!-- Dot -->
-            <div 
-              class="absolute -left-[calc(2rem_+_5px)] md:-left-[calc(2.5rem_+_5px)] top-1 w-2.5 h-2.5 rounded-full transition-transform duration-300 group-hover:scale-150"
-              :style="{ backgroundColor: getAccentColor(item.accent), boxShadow: `0 0 10px ${getAccentColor(item.accent)}80` }"
-            ></div>
+            <!-- Content Side (45%) -->
+            <div class="w-full pl-24 md:pl-0 md:w-[45%] md:px-12 relative z-20">
+              <div 
+                class="relative transition-all duration-500 group-hover:-translate-y-1"
+                :style="{ animationDelay: `${index * 0.05}s` }"
+                :class="index % 2 === 0 ? 'animate-fade-in-left' : 'animate-fade-in-right'"
+              >
+                <!-- Date -->
+                <div class="flex items-center gap-3 mb-2 transition-opacity duration-300">
+                  <span 
+                    class="text-xs font-black font-mono tracking-widest uppercase px-3 py-1.5 rounded-md border backdrop-blur-md shadow-lg"
+                    :style="{ 
+                      backgroundColor: 'rgba(0,0,0,0.85)', 
+                      borderColor: getAccentColor(item.accent),
+                      color: getAccentColor(item.accent),
+                      boxShadow: `0 0 10px ${getAccentColor(item.accent)}40`
+                    }"
+                  >
+                    {{ item.displayDate }}
+                  </span>
+                  <div class="h-px w-12 bg-black/50 shadow-[0_0_2px_rgba(255,255,255,0.5)]"></div>
+                </div>
 
-            <!-- Card -->
-            <div class="timeline-card p-5 rounded-2xl bg-black/30 backdrop-blur-md border border-white/10 hover:bg-black/40 transition-colors duration-300 hover:shadow-lg hover:shadow-rose-500/10 hover:border-white/20">
-              <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 mb-2">
-                <h3 class="text-xl font-bold text-white group-hover:text-rose-300 transition-colors">{{ item.title }}</h3>
-                <span class="text-xs font-mono text-white/50 tracking-wider bg-white/5 px-2 py-0.5 rounded">{{ item.displayDate }}</span>
+                <!-- Title -->
+                <h3 class="text-3xl font-bold text-white/90 mb-3 tracking-wide leading-tight group-hover:text-white transition-colors duration-300 text-shadow-sm">
+                  {{ item.title }}
+                </h3>
+
+                <!-- Desc -->
+                <p class="text-base text-white/50 font-light leading-relaxed group-hover:text-white/70 transition-colors duration-300">
+                  {{ item.desc }}
+                </p>
               </div>
-              <p class="text-sm text-white/70 leading-relaxed">{{ item.desc }}</p>
             </div>
+
+            <!-- Axis Dot -->
+            <div class="absolute left-6 md:left-1/2 w-3 h-3 md:-translate-x-1/2 top-2 flex items-center justify-center">
+              <div 
+                class="w-1.5 h-1.5 rounded-full transition-all duration-500 group-hover:scale-[2] group-hover:shadow-[0_0_15px_currentColor]"
+                :style="{ backgroundColor: getAccentColor(item.accent), color: getAccentColor(item.accent) }"
+              ></div>
+              <!-- Pulse ring -->
+              <div 
+                class="absolute inset-0 rounded-full opacity-0 group-hover:opacity-30 group-hover:scale-[4] transition-all duration-700"
+                :style="{ backgroundColor: getAccentColor(item.accent) }"
+              ></div>
+            </div>
+
+            <!-- Empty Side -->
+            <div class="hidden md:block md:w-[45%]"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- License Footer -->
-    <footer class="mt-20 pt-8 border-t border-white/5 text-center text-[10px] text-white/30 space-y-2">
-      <p>
-        内容引用自 <a href="https://zh.moegirl.org.cn/星瞳" target="_blank" class="hover:text-rose-400 transition-colors">萌娘百科 (星瞳)</a>
-      </p>
-      <p>
-        内容使用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank" class="hover:text-rose-400 transition-colors">CC BY-NC-SA 3.0 CN</a> 协议授权
+    <!-- Minimal Footer -->
+    <footer class="mt-40 pt-12 border-t border-white/5 text-center text-xs text-white/20 uppercase tracking-[0.2em] font-light">
+      <p class="hover:text-white/40 transition-colors cursor-default">
+        Inspired by Starlight
       </p>
     </footer>
-  </div>
 </template>
 
 <style scoped>
-.year-header {
-  backdrop-filter: blur(8px);
-  padding: 0.5rem 1rem;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(0,0,0,0.5) 0%, transparent 100%);
+/* Organic Fade In Animations */
+.animate-fade-in-left {
+  animation: fadeInLeft 1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.animate-fade-in-right {
+  animation: fadeInRight 1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.text-shadow-sm {
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 </style>
