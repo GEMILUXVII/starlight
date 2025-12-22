@@ -51,32 +51,30 @@ html {
   overflow-y: auto;
 }
 
-/* Custom Scrollbar - Elegant & Premium */
+/* Custom Scrollbar - Blended & Subtle */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--rose) 0%, var(--violet) 100%);
+  background: rgba(244, 114, 182, 0.15);
   border-radius: 10px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 0 10px rgba(244, 114, 182, 0.3);
+  transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #ff85c0 0%, #b794f4 100%);
-  box-shadow: 0 0 15px rgba(244, 114, 182, 0.5);
+  background: rgba(244, 114, 182, 0.4);
+  box-shadow: 0 0 10px rgba(244, 114, 182, 0.5);
 }
 
 /* Firefox */
-html {
+* {
   scrollbar-width: thin;
-  scrollbar-color: var(--rose) rgba(0, 0, 0, 0.2);
+  scrollbar-color: rgba(244, 114, 182, 0.15) transparent;
 }
 
 body {
