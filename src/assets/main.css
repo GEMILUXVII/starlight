@@ -27,10 +27,16 @@
   @apply fixed inset-0 -z-30 bg-cover bg-top bg-no-repeat;
 }
 
-/* 渐变叠加 - 只在底部加深，保持脸部清晰 */
+/* 渐变叠加 - 底部加深 + 左右暗化 */
 .glass-overlay {
   @apply fixed inset-0 -z-20;
   background:
+    /* 左右渐暗效果 (椭圆形径向渐变) */
+    radial-gradient(ellipse 50% 100% at 50% 50%,
+      transparent 0%,
+      rgba(0, 0, 0, 0.5) 50%,
+      rgba(0, 0, 0, 0.85) 100%),
+    /* 底部渐暗效果 */
     linear-gradient(180deg,
       rgba(10, 10, 20, 0.2) 0%,
       rgba(10, 10, 20, 0.1) 30%,

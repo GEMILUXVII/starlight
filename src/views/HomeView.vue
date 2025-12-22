@@ -49,7 +49,7 @@ const events = [
         XINGTONG
         <span class="text-rose-400">✦</span>
       </h1>
-      <p class="text-xs tracking-[0.5em] text-white/60 uppercase text-shadow pl-2">Fan Countdown Project</p>
+      <p class="text-xs tracking-[0.5em] text-white/60 uppercase text-shadow pl-2">星星的星 闪耀双瞳的瞳</p>
     </header>
     
     <!-- Main content area with two columns -->
