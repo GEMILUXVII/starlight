@@ -2,6 +2,8 @@
 import { onMounted, computed } from 'vue'
 import { RouterView, RouterLink, useRoute } from 'vue-router'
 import { Analytics } from '@vercel/analytics/vue'
+import { OverlayScrollbars } from 'overlayscrollbars'
+import 'overlayscrollbars/overlayscrollbars.css'
 
 // 交互式粒子系统
 class ParticleSystem {

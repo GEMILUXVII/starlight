@@ -1,7 +1,6 @@
 <script setup>
 import { computed, ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { OverlayScrollbars } from 'overlayscrollbars'
-import 'overlayscrollbars/overlayscrollbars.css'
 
 // Current visible year (for fixed display)
 const currentYear = ref('')
@@ -51,7 +50,7 @@ onMounted(() => {
       currentYear.value = yearSections.value[0].dataset.year
     }
     
-    // Initialize OverlayScrollbars on body
+    // Initialize OverlayScrollbars for Timeline page only
     OverlayScrollbars(document.body, {
       scrollbars: {
         theme: 'os-theme-star',
@@ -66,7 +65,7 @@ onUnmounted(() => {
   if (observer) {
     observer.disconnect()
   }
-  // Destroy OverlayScrollbars
+  // Destroy OverlayScrollbars when leaving Timeline
   const osInstance = OverlayScrollbars(document.body)
   if (osInstance) {
     osInstance.destroy()
@@ -378,45 +377,5 @@ const eventsByYear = computed(() => {
   writing-mode: vertical-rl;
   text-orientation: mixed;
   transform: rotate(180deg);
-}
-</style>
-
-<style>
-/* Custom Star Theme for OverlayScrollbars */
-.os-theme-star {
-  --os-handle-bg: transparent;
-  --os-handle-bg-hover: transparent;
-  --os-handle-bg-active: transparent;
-}
-
-.os-theme-star .os-scrollbar-handle {
-  background: transparent !important;
-  position: relative;
-}
-
-.os-theme-star .os-scrollbar-handle::before {
-  content: '✦';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 16px;
-  color: rgba(244, 114, 182, 0.6);
-  text-shadow: 0 0 8px rgba(244, 114, 182, 0.4);
-  transition: all 0.3s ease;
-}
-
-.os-theme-star .os-scrollbar-handle:hover::before {
-  color: #f472b6;
-  text-shadow: 0 0 15px rgba(244, 114, 182, 0.8);
-  font-size: 20px;
-}
-
-.os-theme-star .os-scrollbar-track {
-  background: transparent !important;
-}
-
-.os-theme-star.os-scrollbar-vertical {
-  width: 20px;
 }
 </style>

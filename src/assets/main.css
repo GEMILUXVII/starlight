@@ -51,30 +51,51 @@ html {
   overflow-y: auto;
 }
 
-/* Custom Scrollbar - Blended & Subtle */
+/* Hide native scrollbar when OverlayScrollbars is active */
 ::-webkit-scrollbar {
-  width: 6px;
+  display: none;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+* {
+  scrollbar-width: none;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(244, 114, 182, 0.15);
-  border-radius: 10px;
+/* Custom Star Theme for OverlayScrollbars */
+.os-theme-star {
+  --os-handle-bg: transparent;
+  --os-handle-bg-hover: transparent;
+  --os-handle-bg-active: transparent;
+}
+
+.os-theme-star .os-scrollbar-handle {
+  background: transparent !important;
+  position: relative;
+}
+
+.os-theme-star .os-scrollbar-handle::before {
+  content: '✦';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  color: rgba(244, 114, 182, 0.6);
+  text-shadow: 0 0 8px rgba(244, 114, 182, 0.4);
   transition: all 0.3s ease;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(244, 114, 182, 0.4);
-  box-shadow: 0 0 10px rgba(244, 114, 182, 0.5);
+.os-theme-star .os-scrollbar-handle:hover::before {
+  color: #f472b6;
+  text-shadow: 0 0 15px rgba(244, 114, 182, 0.8);
+  font-size: 20px;
 }
 
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(244, 114, 182, 0.15) transparent;
+.os-theme-star .os-scrollbar-track {
+  background: transparent !important;
+}
+
+.os-theme-star.os-scrollbar-vertical {
+  width: 20px;
 }
 
 body {
