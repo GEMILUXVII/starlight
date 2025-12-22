@@ -253,8 +253,8 @@ const eventsByYear = computed(() => {
 <template>
     <div class="relative max-w-5xl mx-auto px-4">
       <!-- Fixed Year Display -->
-      <div class="fixed left-4 md:left-[calc(50%-42rem)] top-32 z-40 pointer-events-none">
-        <span class="text-6xl md:text-8xl font-black text-white/10 select-none tracking-tighter vertical-text drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] transition-all duration-300">
+      <div class="fixed left-4 md:left-[calc(50%-32rem)] top-32 z-40 pointer-events-none">
+        <span class="text-6xl md:text-8xl font-black text-white/35 select-none tracking-tighter vertical-text drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] transition-all duration-300">
           {{ currentYear }}
         </span>
       </div>
@@ -300,7 +300,7 @@ const eventsByYear = computed(() => {
                 </h3>
 
                 <!-- Desc -->
-                <p class="text-base text-white/50 font-light leading-relaxed group-hover:text-white/70 transition-colors duration-300">
+                <p class="text-base text-white/70 font-normal leading-relaxed group-hover:text-white/90 transition-colors duration-300">
                   {{ item.desc }}
                 </p>
               </div>

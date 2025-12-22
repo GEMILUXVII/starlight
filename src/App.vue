@@ -123,6 +123,10 @@ onMounted(() => {
   if (!window.particleSystem) {
     window.particleSystem = new ParticleSystem()
   }
+  
+  // Preload bg2.png for smooth transition
+  const preloadImg = new Image()
+  preloadImg.src = '/bg2.png'
 })
 </script>
 
