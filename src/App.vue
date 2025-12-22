@@ -1,6 +1,6 @@
 <script setup>
-import { onMounted } from 'vue'
-import { RouterView, RouterLink } from 'vue-router'
+import { onMounted, computed } from 'vue'
+import { RouterView, RouterLink, useRoute } from 'vue-router'
 import { Analytics } from '@vercel/analytics/vue'
 
 // 交互式粒子系统
@@ -123,16 +123,31 @@ onMounted(() => {
   if (!window.particleSystem) {
     window.particleSystem = new ParticleSystem()
   }
-  
+
   // Preload bg2.png for smooth transition
   const preloadImg = new Image()
   preloadImg.src = '/bg2.png'
 })
+
+const route = useRoute()
+const isTimeline = computed(() => route.name === 'timeline')
 </script>
 
 <template>
   <Analytics />
-  <div class="bg-layer"></div>
+  
+  <!-- Dual Background Layers for Elegant Cross-fade -->
+  <div 
+    class="bg-layer fixed inset-0 -z-30 bg-cover bg-top bg-no-repeat transition-opacity duration-700 ease-in-out will-change-[opacity]"
+    style="background-image: url('/bg.png')"
+    :class="isTimeline ? 'opacity-0' : 'opacity-100'"
+  ></div>
+  
+  <div 
+    class="bg-layer fixed inset-0 -z-30 bg-cover bg-top bg-no-repeat transition-opacity duration-700 ease-in-out will-change-[opacity]"
+    style="background-image: url('/bg2.png')"
+    :class="isTimeline ? 'opacity-100' : 'opacity-0'"
+  ></div>
   <div class="glass-overlay"></div>
   
   <!-- Navigation -->

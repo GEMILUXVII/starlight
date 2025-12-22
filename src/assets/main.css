@@ -25,7 +25,6 @@
 
 .bg-layer {
   @apply fixed inset-0 -z-30 bg-cover bg-top bg-no-repeat;
-  background-image: url('/bg.png');
 }
 
 /* 渐变叠加 - 只在底部加深，保持脸部清晰 */
