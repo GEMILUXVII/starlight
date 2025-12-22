@@ -1,5 +1,61 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted, nextTick } from 'vue'
+
+// Current visible year (for fixed display)
+const currentYear = ref('')
+const yearSections = ref([])
+let observer = null
+
+onMounted(() => {
+  nextTick(() => {
+    // Get all year section elements
+    yearSections.value = document.querySelectorAll('[data-year]')
+    
+    // Create IntersectionObserver
+    observer = new IntersectionObserver((entries) => {
+      // Find the topmost visible section
+      let topSection = null
+      let topY = Infinity
+      
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const rect = entry.boundingClientRect
+          if (rect.top < topY && rect.top < window.innerHeight * 0.5) {
+            topY = rect.top
+            topSection = entry.target
+          }
+        }
+      })
+      
+      // Also check all sections to find which one is most visible at top
+      yearSections.value.forEach(section => {
+        const rect = section.getBoundingClientRect()
+        if (rect.top <= 150 && rect.bottom > 150) {
+          currentYear.value = section.dataset.year
+        }
+      })
+    }, {
+      threshold: [0, 0.1, 0.5],
+      rootMargin: '-100px 0px -50% 0px'
+    })
+    
+    // Observe all year sections
+    yearSections.value.forEach(section => {
+      observer.observe(section)
+    })
+    
+    // Set initial year
+    if (yearSections.value.length > 0) {
+      currentYear.value = yearSections.value[0].dataset.year
+    }
+  })
+})
+
+onUnmounted(() => {
+  if (observer) {
+    observer.disconnect()
+  }
+})
 
 // Accent color mapping for timeline dots
 const accentColors = {
@@ -195,17 +251,18 @@ const eventsByYear = computed(() => {
 </script>
 
 <template>
-    <div class="relative max-w-5xl mx-auto">
+    <div class="relative max-w-5xl mx-auto px-4">
+      <!-- Fixed Year Display -->
+      <div class="fixed left-4 md:left-[calc(50%-42rem)] top-32 z-40 pointer-events-none">
+        <span class="text-6xl md:text-8xl font-black text-white/10 select-none tracking-tighter vertical-text drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] transition-all duration-300">
+          {{ currentYear }}
+        </span>
+      </div>
+
       <!-- Minimalist Center Line -->
       <div class="absolute left-6 md:left-1/2 top-12 bottom-0 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent md:-translate-x-1/2"></div>
 
-      <div v-for="group in eventsByYear" :key="group.year" class="mb-32 relative">
-        <!-- Minimal Year Header -->
-        <div class="sticky top-24 z-10 flex justify-start md:justify-center mb-16 pl-[4.5rem] md:pl-0 pointer-events-none">
-          <span class="text-8xl md:text-9xl font-black text-white/5 tracking-tighter select-none blur-[1px] mix-blend-overlay">
-            {{ group.year }}
-          </span>
-        </div>
+      <div v-for="group in eventsByYear" :key="group.year" :data-year="group.year" class="relative group/year pb-20">
 
         <div class="space-y-16">
           <div 
@@ -299,5 +356,11 @@ const eventsByYear = computed(() => {
 
 .text-shadow-sm {
   text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
 }
 </style>
