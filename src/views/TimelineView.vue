@@ -270,17 +270,22 @@ const eventsByYear = computed(() => {
 
 <template>
     <div class="relative max-w-5xl mx-auto px-4">
-      <!-- Fixed Year Display -->
-      <div class="fixed left-4 md:left-[calc(50%-32rem)] top-32 z-40 pointer-events-none">
-        <span class="text-6xl md:text-8xl font-black text-white/35 select-none tracking-tighter vertical-text drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] transition-all duration-300">
+      <!-- Fixed Year Display - Hidden on mobile, shown on md+ -->
+      <div class="hidden md:block fixed md:left-[calc(50%-32rem)] top-32 z-40 pointer-events-none">
+        <span class="text-8xl font-black text-white/35 select-none tracking-tighter vertical-text drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] transition-all duration-300">
           {{ currentYear }}
         </span>
       </div>
 
       <!-- Minimalist Center Line -->
-      <div class="absolute left-6 md:left-1/2 top-12 bottom-0 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent md:-translate-x-1/2"></div>
+      <div class="absolute left-3 md:left-1/2 top-12 bottom-0 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent md:-translate-x-1/2"></div>
 
       <div v-for="group in eventsByYear" :key="group.year" :data-year="group.year" class="relative group/year pb-20">
+        
+        <!-- Mobile Year Header -->
+        <div class="md:hidden text-4xl font-black text-white/30 mb-8 pl-10 tracking-tighter">
+          {{ group.year }}
+        </div>
 
         <div class="space-y-16">
           <div 
@@ -290,7 +295,7 @@ const eventsByYear = computed(() => {
             :class="{ 'md:flex-row-reverse': index % 2 !== 0 }"
           >
             <!-- Content Side (45%) -->
-            <div class="w-full pl-24 md:pl-0 md:w-[45%] md:px-12 relative z-20">
+            <div class="w-full pl-10 md:pl-0 md:w-[45%] md:px-12 relative z-20">
               <div 
                 class="relative transition-all duration-500 group-hover:-translate-y-1"
                 :style="{ animationDelay: `${index * 0.05}s` }"
@@ -325,7 +330,7 @@ const eventsByYear = computed(() => {
             </div>
 
             <!-- Axis Dot -->
-            <div class="absolute left-6 md:left-1/2 w-3 h-3 md:-translate-x-1/2 top-2 flex items-center justify-center">
+            <div class="absolute left-3 md:left-1/2 w-3 h-3 md:-translate-x-1/2 top-2 flex items-center justify-center">
               <div 
                 class="w-1.5 h-1.5 rounded-full transition-all duration-500 group-hover:scale-[2] group-hover:shadow-[0_0_15px_currentColor]"
                 :style="{ backgroundColor: getAccentColor(item.accent), color: getAccentColor(item.accent) }"
