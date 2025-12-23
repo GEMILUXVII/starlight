@@ -14,30 +14,6 @@ const minutes = ref('00')
 const statusText = ref('')
 const isToday = ref(false)
 const hasCelebrated = ref(false)
-const cardRef = ref(null)
-
-// 3D 倾斜逻辑
-const cardTransform = ref('')
-
-const handleMouseMove = (e) => {
-  if (!cardRef.value) return
-  const rect = cardRef.value.getBoundingClientRect()
-  const x = e.clientX - rect.left
-  const y = e.clientY - rect.top
-  const centerX = rect.width / 2
-  const centerY = rect.height / 2
-  
-  const rotateX = ((y - centerY) / centerY) * -8
-  const rotateY = ((x - centerX) / centerX) * 8
-
-  cardRef.value.style.setProperty('--mouse-x', `${x}px`)
-  cardRef.value.style.setProperty('--mouse-y', `${y}px`)
-  cardTransform.value = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`
-}
-
-const handleMouseLeave = () => {
-  cardTransform.value = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)'
-}
 
 // 倒计时逻辑
 function getNextTargetDate(month, day) {
