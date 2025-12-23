@@ -15,15 +15,15 @@ const biliUser = ref({
     <!-- Diagonal Overlay -->
     <div class="diagonal-bg absolute inset-0 bg-black/60 backdrop-blur-xl"></div>
 
-    <div class="relative z-10 w-full max-w-7xl mx-auto px-6 py-20 min-h-screen flex flex-col">
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-20 min-h-screen flex flex-col">
       <!-- Header -->
-      <header class="mb-20 animate-slide-in">
-        <h1 class="text-7xl md:text-8xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/20 uppercase w-fit pr-6">
+      <header class="mb-12 md:mb-20 animate-slide-in">
+        <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/20 uppercase w-fit pr-6">
           About
         </h1>
-        <div class="flex items-center gap-4 mt-2 ml-2">
-          <div class="h-1 w-20 bg-rose-500"></div>
-          <p class="text-lg font-bold tracking-[0.2em] text-white/80 uppercase">The Project</p>
+        <div class="flex items-center gap-3 md:gap-4 mt-2 ml-1 md:ml-2">
+          <div class="h-1 w-12 md:w-20 bg-rose-500"></div>
+          <p class="text-sm md:text-lg font-bold tracking-[0.15em] md:tracking-[0.2em] text-white/80 uppercase">The Project</p>
         </div>
       </header>
 
@@ -32,12 +32,12 @@ const biliUser = ref({
         <!-- Left Col: Intro & Creator -->
         <div class="md:col-span-5 space-y-12 animate-slide-up" style="animation-delay: 0.1s">
           <div class="space-y-6">
-            <h2 class="text-3xl font-bold text-white flex gap-2 items-baseline">
+            <h2 class="text-2xl md:text-3xl font-bold text-white flex gap-2 items-baseline">
               <span class="text-rose-500">01.</span>
               简介
             </h2>
-            <p class="text-xl text-white/80 leading-relaxed font-light">
-              <span class="block text-2xl font-bold mb-4" style="color: #f472b6; text-shadow: 0 0 20px rgba(244, 114, 182, 0.5);">"我在！！！小星星，你慢慢说！！！"</span>
+            <p class="text-base md:text-xl text-white/80 leading-relaxed font-light">
+              <span class="block text-xl md:text-2xl font-bold mb-4" style="color: #f472b6; text-shadow: 0 0 20px rgba(244, 114, 182, 0.5);">"我在！！！小星星，你慢慢说！！！"</span>
               <span class="block">或许我暂时没看到，</span>
               <span class="block">但谢谢你能把这些分享给我，</span>
               <span class="block font-bold text-white mt-2 text-shadow-glow">你说的话很重要！！！</span>
@@ -45,7 +45,7 @@ const biliUser = ref({
           </div>
 
           <div class="space-y-6">
-            <h2 class="text-3xl font-bold text-white flex gap-2 items-baseline">
+            <h2 class="text-2xl md:text-3xl font-bold text-white flex gap-2 items-baseline">
               <span class="text-violet-500">02.</span>
               开发者
             </h2>

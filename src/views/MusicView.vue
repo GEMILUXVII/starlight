@@ -89,18 +89,18 @@ const closeVideo = () => {
 </script>
 
 <template>
-  <div class="music-container w-full max-w-6xl mx-auto py-10 px-4">
-    <header class="header text-center mb-12">
-      <h1 class="title justify-center">
+  <div class="music-container w-full max-w-6xl mx-auto py-6 md:py-10 px-2 sm:px-4">
+    <header class="header text-center mb-8 md:mb-12">
+      <h1 class="title justify-center text-2xl sm:text-3xl md:text-4xl">
         <span class="title-star">✦</span>
         作品选
         <span class="title-star">✦</span>
       </h1>
-      <p class="subtitle">VIDEOS & PERFORMANCES</p>
+      <p class="subtitle text-[10px] sm:text-xs">VIDEOS & PERFORMANCES</p>
     </header>
 
     <!-- Music Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
       <div 
         v-for="music in musicList" 
         :key="music.id"

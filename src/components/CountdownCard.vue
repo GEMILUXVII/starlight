@@ -146,24 +146,24 @@ const accentClass = computed(() => {
     class="countdown-card group" 
     :data-accent="event.accent"
   >
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between gap-2">
       <!-- Left: Title & Date -->
-      <div>
-        <h2 class="text-2xl font-light text-white mb-1 group-hover:text-shadow-glow transition-all" :class="`text-${event.accent}`">{{ displayTitle }}</h2>
-        <span class="text-sm text-white/40 font-mono tracking-widest">{{ event.month }}/{{ event.day }}</span>
+      <div class="min-w-0 flex-shrink">
+        <h2 class="text-lg sm:text-xl md:text-2xl font-light text-white mb-0.5 md:mb-1 group-hover:text-shadow-glow transition-all truncate" :class="`text-${event.accent}`">{{ displayTitle }}</h2>
+        <span class="text-xs sm:text-sm text-white/40 font-mono tracking-wider md:tracking-widest">{{ event.month }}/{{ event.day }}</span>
       </div>
 
       <!-- Right: Countdown -->
       <div 
         v-if="!isToday"
-        class="flex items-baseline gap-4 text-right"
+        class="flex items-baseline gap-2 sm:gap-4 text-right flex-shrink-0"
       >
         <div class="flex flex-col items-end">
-           <span class="text-3xl font-light text-white leading-none tabular-nums">{{ days }}</span>
-           <span class="text-[0.6rem] text-white/30 uppercase tracking-widest">Days</span>
+           <span class="text-2xl sm:text-3xl font-light text-white leading-none tabular-nums">{{ days }}</span>
+           <span class="text-[0.5rem] sm:text-[0.6rem] text-white/30 uppercase tracking-wide sm:tracking-widest">Days</span>
         </div>
-        <div class="w-px h-8 bg-white/10"></div>
-        <div class="flex gap-3">
+        <div class="w-px h-6 sm:h-8 bg-white/10 hidden sm:block"></div>
+        <div class="hidden sm:flex gap-3">
           <div class="flex flex-col items-center w-8">
             <span class="text-lg font-light text-white/80 leading-none tabular-nums">{{ hours }}</span>
             <span class="text-[0.5rem] text-white/30 uppercase mt-1">Hr</span>
@@ -176,8 +176,8 @@ const accentClass = computed(() => {
       </div>
 
       <!-- Today Status -->
-      <div v-else class="text-right">
-        <span class="text-xl font-bold text-amber-400 animate-pulse">{{ statusText }}</span>
+      <div v-else class="text-right flex-shrink-0">
+        <span class="text-base sm:text-xl font-bold text-amber-400 animate-pulse">{{ statusText }}</span>
       </div>
     </div>
   </article>
@@ -186,7 +186,7 @@ const accentClass = computed(() => {
 <style scoped>
 /* Minimal Wide Strip Style */
 .countdown-card {
-  @apply relative w-full p-6 rounded-xl transition-all duration-300;
+  @apply relative w-full p-3 sm:p-4 md:p-6 rounded-xl transition-all duration-300;
   background: linear-gradient(to right, transparent, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.4) 100%);
   border-right: 4px solid transparent; /* Changed to right border */
 }
@@ -199,7 +199,12 @@ const accentClass = computed(() => {
 
 .countdown-card:hover {
   background: linear-gradient(to right, transparent, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.6) 100%);
-  transform: translateX(-8px); /* Move slightly left on hover */
+}
+
+@media (min-width: 768px) {
+  .countdown-card:hover {
+    transform: translateX(-8px); /* Move slightly left on hover - only on desktop */
+  }
 }
 
 /* Enhanced visibility classes */

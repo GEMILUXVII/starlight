@@ -1,9 +1,12 @@
 <script setup>
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref, watch } from 'vue'
 import { RouterView, RouterLink, useRoute } from 'vue-router'
 // Vercel Analytics removed - site is self-hosted
 import { OverlayScrollbars } from 'overlayscrollbars'
 import 'overlayscrollbars/overlayscrollbars.css'
+
+// 移动端菜单状态
+const menuOpen = ref(false)
 
 // 交互式粒子系统
 class ParticleSystem {
@@ -136,6 +139,11 @@ onMounted(() => {
 const route = useRoute()
 const isTimeline = computed(() => route.name === 'timeline')
 const isHome = computed(() => route.name === 'home')
+
+// 路由变化时自动关闭菜单
+watch(() => route.path, () => {
+  menuOpen.value = false
+})
 </script>
 
 <template>
@@ -156,11 +164,12 @@ const isHome = computed(() => route.name === 'home')
   <div class="glass-overlay"></div>
   
   <!-- Navigation -->
-  <nav class="fixed top-0 left-0 right-0 z-50 flex justify-center p-6 pointer-events-none">
-    <div class="glass-nav pointer-events-auto flex gap-6 px-8 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg">
+  <nav class="fixed top-0 left-0 right-0 z-50 flex justify-center p-4 md:p-6 pointer-events-none">
+    <!-- Desktop Navigation -->
+    <div class="glass-nav pointer-events-auto hidden md:flex gap-4 lg:gap-6 px-6 lg:px-8 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg">
       <RouterLink 
         to="/" 
-        class="nav-link text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-widest"
+        class="nav-link text-xs lg:text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-wider lg:tracking-widest"
         active-class="!text-rose-400 font-bold glow"
       >
         Countdown
@@ -168,7 +177,7 @@ const isHome = computed(() => route.name === 'home')
       <div class="w-px h-4 bg-white/20 my-auto"></div>
       <RouterLink 
         to="/timeline" 
-        class="nav-link text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-widest"
+        class="nav-link text-xs lg:text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-wider lg:tracking-widest"
         active-class="!text-rose-400 font-bold glow"
       >
         Timeline
@@ -176,7 +185,7 @@ const isHome = computed(() => route.name === 'home')
       <div class="w-px h-4 bg-white/20 my-auto"></div>
       <RouterLink 
         to="/music" 
-        class="nav-link text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-widest"
+        class="nav-link text-xs lg:text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-wider lg:tracking-widest"
         active-class="!text-rose-400 font-bold glow"
       >
         Videos
@@ -184,7 +193,7 @@ const isHome = computed(() => route.name === 'home')
       <div class="w-px h-4 bg-white/20 my-auto"></div>
       <RouterLink 
         to="/guestbook" 
-        class="nav-link text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-widest"
+        class="nav-link text-xs lg:text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-wider lg:tracking-widest"
         active-class="!text-rose-400 font-bold glow"
       >
         Guestbook
@@ -192,16 +201,80 @@ const isHome = computed(() => route.name === 'home')
       <div class="w-px h-4 bg-white/20 my-auto"></div>
       <RouterLink 
         to="/about" 
-        class="nav-link text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-widest"
+        class="nav-link text-xs lg:text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-wider lg:tracking-widest"
         active-class="!text-rose-400 font-bold glow"
       >
         About
       </RouterLink>
     </div>
+
+    <!-- Mobile Navigation Button -->
+    <button 
+      @click="menuOpen = !menuOpen"
+      class="md:hidden pointer-events-auto w-12 h-12 flex flex-col items-center justify-center gap-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg transition-all"
+      :class="menuOpen ? 'bg-white/10' : ''"
+    >
+      <span 
+        class="block w-5 h-0.5 bg-white/80 rounded-full transition-all duration-300"
+        :class="menuOpen ? 'rotate-45 translate-y-2' : ''"
+      ></span>
+      <span 
+        class="block w-5 h-0.5 bg-white/80 rounded-full transition-all duration-300"
+        :class="menuOpen ? 'opacity-0' : ''"
+      ></span>
+      <span 
+        class="block w-5 h-0.5 bg-white/80 rounded-full transition-all duration-300"
+        :class="menuOpen ? '-rotate-45 -translate-y-2' : ''"
+      ></span>
+    </button>
   </nav>
 
+  <!-- Mobile Menu Overlay -->
+  <Transition name="menu-fade">
+    <div 
+      v-if="menuOpen"
+      class="md:hidden fixed inset-0 z-40 bg-black/80 backdrop-blur-xl flex flex-col items-center justify-center gap-8"
+    >
+      <RouterLink 
+        to="/" 
+        class="text-2xl font-light text-white/80 hover:text-rose-400 transition-colors uppercase tracking-widest"
+        :class="route.path === '/' ? 'text-rose-400' : ''"
+      >
+        Countdown
+      </RouterLink>
+      <RouterLink 
+        to="/timeline" 
+        class="text-2xl font-light text-white/80 hover:text-rose-400 transition-colors uppercase tracking-widest"
+        :class="route.path === '/timeline' ? 'text-rose-400' : ''"
+      >
+        Timeline
+      </RouterLink>
+      <RouterLink 
+        to="/music" 
+        class="text-2xl font-light text-white/80 hover:text-rose-400 transition-colors uppercase tracking-widest"
+        :class="route.path === '/music' ? 'text-rose-400' : ''"
+      >
+        Videos
+      </RouterLink>
+      <RouterLink 
+        to="/guestbook" 
+        class="text-2xl font-light text-white/80 hover:text-rose-400 transition-colors uppercase tracking-widest"
+        :class="route.path === '/guestbook' ? 'text-rose-400' : ''"
+      >
+        Guestbook
+      </RouterLink>
+      <RouterLink 
+        to="/about" 
+        class="text-2xl font-light text-white/80 hover:text-rose-400 transition-colors uppercase tracking-widest"
+        :class="route.path === '/about' ? 'text-rose-400' : ''"
+      >
+        About
+      </RouterLink>
+    </div>
+  </Transition>
+
   <main 
-    class="main-container flex flex-col p-8 pt-24"
+    class="main-container flex flex-col p-4 pt-20 md:p-8 md:pt-24"
     :class="isHome ? 'h-screen overflow-hidden' : 'min-h-screen'"
   >
     <!-- Router View -->
@@ -224,5 +297,16 @@ const isHome = computed(() => route.name === 'home')
 /* Nav Link Glow */
 .nav-link.glow {
   text-shadow: 0 0 10px rgba(244, 114, 182, 0.5);
+}
+
+/* Mobile Menu Transitions */
+.menu-fade-enter-active,
+.menu-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.menu-fade-enter-from,
+.menu-fade-leave-to {
+  opacity: 0;
 }
 </style>
