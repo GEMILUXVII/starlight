@@ -76,13 +76,14 @@ onMounted(() => initAudio())
 
     <div class="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-8 md:py-12">
       <!-- Header -->
-      <header class="mb-8 md:mb-12 animate-slide-in text-center">
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black italic tracking-tight text-white drop-shadow-lg">
+      <header class="mb-8 md:mb-12 animate-slide-in">
+        <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/20 uppercase">
           Cover Songs
         </h1>
-        <p class="text-base md:text-lg text-white/60 mt-2 tracking-widest">
-          翻唱切片 / 歌单图鉴
-        </p>
+        <div class="flex items-center gap-3 md:gap-4 mt-2 ml-1 md:ml-2">
+          <div class="h-1 w-12 md:w-20 bg-rose-500"></div>
+          <p class="text-sm md:text-lg font-bold tracking-[0.15em] md:tracking-[0.2em] text-white/80 uppercase">翻唱切片</p>
+        </div>
       </header>
 
       <!-- Cover Art Section -->
