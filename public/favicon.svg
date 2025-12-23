@@ -1,24 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <defs>
+    <!-- Main star gradient -->
     <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#f472b6"/>
-      <stop offset="100%" style="stop-color:#a78bfa"/>
+      <stop offset="0%" style="stop-color:#fff7a1"/>
+      <stop offset="30%" style="stop-color:#fcd34d"/>
+      <stop offset="70%" style="stop-color:#fbbf24"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
     </linearGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+    <!-- Shine gradient -->
+    <radialGradient id="shine" cx="30%" cy="30%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+    </radialGradient>
+    <!-- Glow effect -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
       <feMerge>
+        <feMergeNode in="coloredBlur"/>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
+  
+  <!-- Main star with glow -->
   <polygon 
-    points="16,2 20.5,11.5 31,12.5 23,20 25.5,30 16,25 6.5,30 9,20 1,12.5 11.5,11.5" 
+    points="16,3 19.5,11.5 29,12.5 22,19 24,28 16,24 8,28 10,19 3,12.5 12.5,11.5" 
     fill="url(#starGradient)" 
     filter="url(#glow)"
+    stroke="#f59e0b"
+    stroke-width="0.3"
   />
-  <!-- Small sparkles -->
-  <circle cx="6" cy="6" r="1" fill="#fff" opacity="0.8"/>
-  <circle cx="26" cy="8" r="0.8" fill="#fff" opacity="0.6"/>
-  <circle cx="28" cy="24" r="0.6" fill="#fff" opacity="0.5"/>
+  
+  <!-- Inner shine highlight -->
+  <polygon 
+    points="16,6 18,11 24,11.5 19.5,16 21,22 16,19 11,22 12.5,16 8,11.5 14,11" 
+    fill="url(#shine)"
+    opacity="0.6"
+  />
 </svg>
