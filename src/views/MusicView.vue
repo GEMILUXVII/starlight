@@ -1,22 +1,22 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import PlayButton from '../components/MusicPlayer/PlayButton.vue'
+import SongItem from '../components/MusicPlayer/SongItem.vue'
+import { songs as songsData } from '../data/songs.js'
+import { useAudioPlayer } from '../composables/useAudioPlayer.js'
 
 // 腾讯云 COS 存储桶配置
 const COS_BASE_URL = import.meta.env.VITE_COS_BASE_URL || ''
 
 // 获取完整的资源 URL
 const getAssetUrl = (path) => {
-  if (!path) return '/bg.webp' // 默认封面
-  if (path.startsWith('http')) return path // 已经是完整 URL
+  if (!path) return '/bg.webp'
+  if (path.startsWith('http')) return path
   return COS_BASE_URL ? `${COS_BASE_URL}${path}` : path
 }
 
-import { songs as songsData } from '../data/songs.js'
-
 // 音乐数据
 const songs = ref(songsData)
-
 
 // 搜索
 const searchQuery = ref('')
@@ -31,91 +31,42 @@ const filteredSongs = computed(() => {
   )
 })
 
-// 播放器状态
-const currentSong = ref(null)
-const isPlaying = ref(false)
-const currentTime = ref(0)
-const duration = ref(0)
-const volume = ref(0.8)
-const audioRef = ref(null)
+// 使用播放器 Composable
+const {
+  currentSong,
+  isPlaying,
+  currentTime,
+  duration,
+  volume,
+  audioRef,
+  playSong: playerPlaySong,
+  togglePlay,
+  seek,
+  setVolume,
+  formatTime,
+  onTimeUpdate,
+  onLoadedMetadata,
+  onEnded: playerOnEnded,
+  initAudio
+} = useAudioPlayer(getAssetUrl)
 
-// 播放控制
-const playSong = (song) => {
-  if (currentSong.value?.id === song.id) {
-    togglePlay()
-    return
-  }
-  currentSong.value = song
-  isPlaying.value = true
-  if (audioRef.value) {
-    audioRef.value.src = getAssetUrl(song.audio)
-    audioRef.value.play()
-  }
-}
-
-const togglePlay = () => {
-  if (!audioRef.value || !currentSong.value) return
-  if (isPlaying.value) {
-    audioRef.value.pause()
-  } else {
-    audioRef.value.play()
-  }
-  isPlaying.value = !isPlaying.value
-}
-
-const seek = (e) => {
-  if (!audioRef.value || !duration.value) return
-  const rect = e.currentTarget.getBoundingClientRect()
-  const percent = (e.clientX - rect.left) / rect.width
-  audioRef.value.currentTime = percent * duration.value
-}
-
-const setVolume = (e) => {
-  const rect = e.currentTarget.getBoundingClientRect()
-  const percent = (e.clientX - rect.left) / rect.width
-  volume.value = Math.max(0, Math.min(1, percent))
-  if (audioRef.value) audioRef.value.volume = volume.value
-}
-
-const formatTime = (seconds) => {
-  if (!seconds || isNaN(seconds)) return '0:00'
-  const mins = Math.floor(seconds / 60)
-  const secs = Math.floor(seconds % 60)
-  return `${mins}:${secs.toString().padStart(2, '0')}`
-}
-
+// 封装播放函数
+const playSong = (song) => playerPlaySong(song, filteredSongs.value)
 const playNext = () => {
   if (!currentSong.value) return
   const currentIndex = filteredSongs.value.findIndex(s => s.id === currentSong.value.id)
   const nextIndex = (currentIndex + 1) % filteredSongs.value.length
   playSong(filteredSongs.value[nextIndex])
 }
-
 const playPrev = () => {
   if (!currentSong.value) return
   const currentIndex = filteredSongs.value.findIndex(s => s.id === currentSong.value.id)
   const prevIndex = currentIndex === 0 ? filteredSongs.value.length - 1 : currentIndex - 1
   playSong(filteredSongs.value[prevIndex])
 }
+const onEnded = () => playNext()
 
-// 音频事件处理
-const onTimeUpdate = () => {
-  if (audioRef.value) currentTime.value = audioRef.value.currentTime
-}
-
-const onLoadedMetadata = () => {
-  if (audioRef.value) duration.value = audioRef.value.duration
-}
-
-const onEnded = () => {
-  playNext()
-}
-
-onMounted(() => {
-  if (audioRef.value) {
-    audioRef.value.volume = volume.value
-  }
-})
+onMounted(() => initAudio())
 </script>
 
 <template>
@@ -256,68 +207,15 @@ onMounted(() => {
 
       <!-- Song List -->
       <div class="space-y-3">
-        <div 
-          v-for="song in filteredSongs" 
+        <SongItem
+          v-for="song in filteredSongs"
           :key="song.id"
+          :song="song"
+          :is-active="currentSong?.id === song.id"
+          :is-playing="isPlaying"
+          :cover-url="getAssetUrl(song.cover)"
           @click="playSong(song)"
-          class="song-item group flex items-center gap-4 p-3 rounded-2xl cursor-pointer transition-all duration-300 border border-transparent hover:border-white/10 hover:bg-white/5 active:scale-[0.99]"
-          :class="{ 'bg-white/10 !border-white/10 shadow-lg shadow-black/20': currentSong?.id === song.id }"
-        >
-          <!-- Cover -->
-          <div class="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 shadow-md group-hover:shadow-xl transition-shadow">
-            <img :src="getAssetUrl(song.cover)" :alt="song.title" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-            
-            <!-- Playing Overlay -->
-            <div 
-              v-if="currentSong?.id === song.id && isPlaying"
-              class="absolute inset-0 bg-char-navy/60 backdrop-blur-[2px] flex items-center justify-center text-char-blue"
-            >
-              <div class="flex items-end gap-[3px] h-4">
-                <span class="w-1 bg-current rounded-full animate-music-bar-1 opacity-80"></span>
-                <span class="w-1 bg-white rounded-full animate-music-bar-2"></span>
-                <span class="w-1 bg-current rounded-full animate-music-bar-3 opacity-80"></span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Info -->
-          <div class="flex-1 min-w-0 flex flex-col justify-center">
-            <div class="flex items-center gap-3 mb-1">
-              <h3 
-                class="font-bold text-lg truncate transition-colors"
-                :class="currentSong?.id === song.id ? 'text-char-blue' : 'text-white group-hover:text-white/90'"
-              >
-                {{ song.title }}
-              </h3>
-              <div v-if="song.tags.length" class="flex gap-1.5">
-                 <span 
-                  v-for="tag in song.tags.slice(0, 2)" 
-                  :key="tag"
-                  class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold border"
-                  :class="currentSong?.id === song.id ? 'border-char-blue/30 text-char-blue bg-char-blue/10' : 'border-white/10 text-white/40 group-hover:border-white/20'"
-                >
-                  {{ tag }}
-                </span>
-              </div>
-            </div>
-            <p class="text-sm truncate transition-colors" :class="currentSong?.id === song.id ? 'text-white/70' : 'text-white/40 group-hover:text-white/60'">
-              {{ song.artist }}
-              <span v-if="song.subtitle" class="opacity-60"> · {{ song.subtitle }}</span>
-            </p>
-          </div>
-
-          <!-- Date/Status -->
-          <div class="hidden sm:flex flex-col items-end gap-1">
-             <span class="text-xs font-mono text-white/20 group-hover:text-white/40 transition-colors">{{ song.date }}</span>
-          </div>
-
-          <!-- Action Button -->
-          <button class="w-8 h-8 rounded-full flex items-center justify-center text-white/20 hover:text-white hover:bg-white/10 transition-all opacity-0 group-hover:opacity-100">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-            </svg>
-          </button>
-        </div>
+        />
       </div>
 
       <!-- Empty State -->
@@ -343,25 +241,6 @@ onMounted(() => {
 
 .animate-fade-in {
   animation: fadeIn 0.4s ease-out forwards;
-}
-
-.animate-music-bar-1 {
-  animation: musicBar 0.5s ease-in-out infinite alternate;
-}
-
-.animate-music-bar-2 {
-  animation: musicBar 0.7s ease-in-out infinite alternate;
-  animation-delay: 0.1s;
-}
-
-.animate-music-bar-3 {
-  animation: musicBar 0.9s ease-in-out infinite alternate;
-  animation-delay: 0.2s;
-}
-
-@keyframes musicBar {
-  0% { height: 4px; opacity: 0.5; }
-  100% { height: 16px; opacity: 1; }
 }
 
 @keyframes slideIn {
