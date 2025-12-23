@@ -24,6 +24,7 @@ jobs:
         npm run build
       env:
         VITE_ARTALK_SERVER: ${{ secrets.VITE_ARTALK_SERVER }}
+        VITE_COS_BASE_URL: ${{ secrets.VITE_COS_BASE_URL }}
 
     - name: Deploy to Server
       uses: easingthemes/ssh-deploy@main
