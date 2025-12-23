@@ -6,6 +6,7 @@ import { OverlayScrollbars } from 'overlayscrollbars'
 const currentYear = ref('')
 const yearSections = ref([])
 let observer = null
+let osInstance = null // 保存 OverlayScrollbars 实例引用
 
 onMounted(() => {
   nextTick(() => {
@@ -51,7 +52,8 @@ onMounted(() => {
     }
     
     // Initialize OverlayScrollbars for Timeline page only
-    OverlayScrollbars(document.body, {
+    // 保存实例引用以便后续正确销毁
+    osInstance = OverlayScrollbars(document.body, {
       scrollbars: {
         theme: 'os-theme-star',
         autoHide: 'leave',
@@ -64,11 +66,12 @@ onMounted(() => {
 onUnmounted(() => {
   if (observer) {
     observer.disconnect()
+    observer = null
   }
-  // Destroy OverlayScrollbars when leaving Timeline
-  const osInstance = OverlayScrollbars(document.body)
+  // 使用保存的实例引用正确销毁 OverlayScrollbars
   if (osInstance) {
     osInstance.destroy()
+    osInstance = null
   }
 })
 

@@ -78,7 +78,8 @@ class ParticleSystem {
   }
 
   animate() {
-    this.particles.forEach((p, index) => {
+    // 使用 filter 替代 forEach + splice，避免在遍历中修改数组导致索引错乱
+    this.particles = this.particles.filter((p) => {
       p.x += p.vx
       p.y += p.vy
       
@@ -103,7 +104,7 @@ class ParticleSystem {
         p.rotation += p.rotationSpeed
         if (p.y > window.innerHeight) {
           p.element.remove()
-          this.particles.splice(index, 1)
+          return false // 移除粒子
         }
       } else {
         if (p.y < -10) p.y = window.innerHeight + 10
@@ -116,6 +117,7 @@ class ParticleSystem {
         : `translate(${p.x}px, ${p.y}px)`
       
       p.element.style.transform = transform
+      return true // 保留粒子
     })
     requestAnimationFrame(this.animate)
   }
@@ -126,9 +128,9 @@ onMounted(() => {
     window.particleSystem = new ParticleSystem()
   }
 
-  // Preload bg2.png for smooth transition
+  // Preload bg2.webp for smooth transition
   const preloadImg = new Image()
-  preloadImg.src = '/bg2.png'
+  preloadImg.src = '/bg2.webp'
 })
 
 const route = useRoute()
@@ -142,13 +144,13 @@ const isHome = computed(() => route.name === 'home')
   <!-- Dual Background Layers for Elegant Cross-fade -->
   <div 
     class="bg-layer fixed inset-0 -z-30 bg-cover bg-top bg-no-repeat transition-opacity duration-700 ease-in-out will-change-[opacity]"
-    style="background-image: url('/bg.png')"
+    style="background-image: url('/bg.webp')"
     :class="isTimeline ? 'opacity-0' : 'opacity-100'"
   ></div>
   
   <div 
     class="bg-layer fixed inset-0 -z-30 bg-cover bg-top bg-no-repeat transition-opacity duration-700 ease-in-out will-change-[opacity]"
-    style="background-image: url('/bg2.png'); filter: brightness(0.5);"
+    style="background-image: url('/bg2.webp'); filter: brightness(0.5);"
     :class="isTimeline ? 'opacity-100' : 'opacity-0'"
   ></div>
   <div class="glass-overlay"></div>
