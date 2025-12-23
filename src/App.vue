@@ -191,7 +191,7 @@ watch(() => route.path, () => {
         class="nav-link text-xs lg:text-sm font-medium text-white/60 hover:text-white transition-colors uppercase tracking-wider lg:tracking-widest"
         active-class="!text-rose-400 font-bold glow"
       >
-        Videos
+        Music
       </RouterLink>
       <div class="w-px h-4 bg-white/20 my-auto"></div>
       <RouterLink 
@@ -257,7 +257,7 @@ watch(() => route.path, () => {
         class="text-2xl font-light text-white/80 hover:text-rose-400 transition-colors uppercase tracking-widest"
         :class="route.path === '/videos' ? 'text-rose-400' : ''"
       >
-        Videos
+        Music
       </RouterLink>
       <RouterLink 
         to="/guestbook" 

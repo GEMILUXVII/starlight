@@ -1,246 +1,385 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-// Accent color mapping for badges
-const accentColors = {
-  rose: '#f472b6',
-  violet: '#a78bfa',
-  cyan: '#22d3ee',
-  amber: '#fbbf24',
-  blue: '#3b82f6',
-  pink: '#ec4899',
-  red: '#ef4444'
-}
-
-const getAccentColor = (accent) => accentColors[accent] || '#ffffff'
-
-const musicList = [
+// 音乐数据 - 本地文件存储在 /public/music/ 目录
+const songs = ref([
   {
     id: 1,
-    title: '瞳',
-    type: '原创曲',
-    date: '2022-11-04',
-    bvid: 'BV1MW4y177ZG',
-    cover: 'https://imgbed.aspchang.cn/file/46fc603768bd78de2b47c50607a28ee9de36c0ad.jpg',
-    desc: '首张迷你专辑《星·引力》主打曲',
-    accent: 'rose'
+    title: '血腥爱情故事',
+    subtitle: '跟唱半首',
+    artist: '张惠妹',
+    date: '2025-01-31',
+    cover: '/music/covers/default.jpg',
+    audio: '/music/blood-love-story.mp3',
+    tags: ['翻唱']
   },
   {
     id: 2,
-    title: '神明少女舞',
-    type: '舞蹈',
-    date: '2022-06-28',
-    bvid: 'BV1HS4y1p7GR',
-    cover: 'https://imgbed.aspchang.cn/file/image(4).png',
-    desc: '神明少女舞，但是星瞳',
-    accent: 'blue'
+    title: '星月神话',
+    subtitle: '电视剧《神话》插曲',
+    artist: '金莎',
+    date: '2025-01-31',
+    cover: '/music/covers/default.jpg',
+    audio: '/music/star-moon-myth.mp3',
+    tags: ['翻唱', '影视']
   },
   {
     id: 3,
-    title: '刀马旦',
-    type: '合作',
-    date: '2023-04-30',
-    bvid: 'BV1d14y1o7JZ',
-    cover: 'https://imgbed.aspchang.cn/file/image(3).png',
-    desc: '星瞳✨兰音共献刀马旦，耍花枪舞翻全场！',
-    accent: 'red'
+    title: '向天再借五百年',
+    subtitle: '电视剧《康熙王朝》主题曲',
+    artist: '韩磊',
+    date: '2025-01-31',
+    cover: '/music/covers/default.jpg',
+    audio: '/music/500-years.mp3',
+    tags: ['翻唱', '影视']
   },
   {
     id: 4,
-    title: '屏中人',
-    type: '原创',
-    date: '2023-10-29',
-    bvid: 'BV18N41137XE',
-    cover: 'https://imgbed.aspchang.cn/file/image(2).png',
-    desc: '屏中无限近的你我，虚拟与现实的链接',
-    accent: 'pink'
+    title: '虚拟',
+    subtitle: '',
+    artist: '陈粒',
+    date: '2025-01-31',
+    cover: '/music/covers/default.jpg',
+    audio: '/music/virtual.mp3',
+    tags: ['翻唱']
   },
   {
     id: 5,
-    title: '星游记',
-    type: 'VLOG',
-    date: '2025-03-10',
-    bvid: 'BV1hPRGYcE53',
-    cover: 'https://imgbed.aspchang.cn/file/image(1).png',
-    desc: '冬季午后与瞳瞳一起漫步在北京什刹海！',
-    accent: 'violet'
+    title: 'See You Again Song',
+    subtitle: 'US',
+    artist: 'Wiz Khalifa',
+    date: '2025-01-31',
+    cover: '/music/covers/default.jpg',
+    audio: '/music/see-you-again.mp3',
+    tags: ['翻唱', '英文']
   },
   {
     id: 6,
-    title: 'Bad Apple',
-    type: '翻唱',
-    date: '2025-11-07',
-    bvid: 'BV1JR11BVEzz',
-    cover: 'https://imgbed.aspchang.cn/file/image.png',
-    desc: '镇站之宝禁忌填词！！25 年了还有翻唱？',
-    accent: 'cyan'
+    title: '不该',
+    subtitle: '大喊大叫',
+    artist: '周杰伦, 张惠妹',
+    date: '2025-01-31',
+    cover: '/music/covers/default.jpg',
+    audio: '/music/bu-gai.mp3',
+    tags: ['翻唱']
   }
-]
+])
 
-const selectedVideo = ref(null)
+// 搜索
+const searchQuery = ref('')
+const filteredSongs = computed(() => {
+  if (!searchQuery.value.trim()) return songs.value
+  const query = searchQuery.value.toLowerCase()
+  return songs.value.filter(song => 
+    song.title.toLowerCase().includes(query) ||
+    song.artist.toLowerCase().includes(query) ||
+    song.subtitle.toLowerCase().includes(query) ||
+    song.tags.some(tag => tag.toLowerCase().includes(query))
+  )
+})
 
-const openVideo = (music) => {
-  selectedVideo.value = music
+// 播放器状态
+const currentSong = ref(null)
+const isPlaying = ref(false)
+const currentTime = ref(0)
+const duration = ref(0)
+const volume = ref(0.8)
+const audioRef = ref(null)
+
+// 播放控制
+const playSong = (song) => {
+  if (currentSong.value?.id === song.id) {
+    togglePlay()
+    return
+  }
+  currentSong.value = song
+  isPlaying.value = true
+  if (audioRef.value) {
+    audioRef.value.src = song.audio
+    audioRef.value.play()
+  }
 }
 
-const closeVideo = () => {
-  selectedVideo.value = null
+const togglePlay = () => {
+  if (!audioRef.value || !currentSong.value) return
+  if (isPlaying.value) {
+    audioRef.value.pause()
+  } else {
+    audioRef.value.play()
+  }
+  isPlaying.value = !isPlaying.value
 }
+
+const seek = (e) => {
+  if (!audioRef.value || !duration.value) return
+  const rect = e.currentTarget.getBoundingClientRect()
+  const percent = (e.clientX - rect.left) / rect.width
+  audioRef.value.currentTime = percent * duration.value
+}
+
+const setVolume = (e) => {
+  const rect = e.currentTarget.getBoundingClientRect()
+  const percent = (e.clientX - rect.left) / rect.width
+  volume.value = Math.max(0, Math.min(1, percent))
+  if (audioRef.value) audioRef.value.volume = volume.value
+}
+
+const formatTime = (seconds) => {
+  if (!seconds || isNaN(seconds)) return '0:00'
+  const mins = Math.floor(seconds / 60)
+  const secs = Math.floor(seconds % 60)
+  return `${mins}:${secs.toString().padStart(2, '0')}`
+}
+
+const playNext = () => {
+  if (!currentSong.value) return
+  const currentIndex = filteredSongs.value.findIndex(s => s.id === currentSong.value.id)
+  const nextIndex = (currentIndex + 1) % filteredSongs.value.length
+  playSong(filteredSongs.value[nextIndex])
+}
+
+const playPrev = () => {
+  if (!currentSong.value) return
+  const currentIndex = filteredSongs.value.findIndex(s => s.id === currentSong.value.id)
+  const prevIndex = currentIndex === 0 ? filteredSongs.value.length - 1 : currentIndex - 1
+  playSong(filteredSongs.value[prevIndex])
+}
+
+// 音频事件处理
+const onTimeUpdate = () => {
+  if (audioRef.value) currentTime.value = audioRef.value.currentTime
+}
+
+const onLoadedMetadata = () => {
+  if (audioRef.value) duration.value = audioRef.value.duration
+}
+
+const onEnded = () => {
+  playNext()
+}
+
+onMounted(() => {
+  if (audioRef.value) {
+    audioRef.value.volume = volume.value
+  }
+})
 </script>
 
 <template>
-  <div class="music-container w-full max-w-6xl mx-auto py-6 md:py-10 px-2 sm:px-4">
-    <header class="header text-center mb-8 md:mb-12">
-      <h1 class="title justify-center text-2xl sm:text-3xl md:text-4xl">
-        <span class="title-star">✦</span>
-        作品选
-        <span class="title-star">✦</span>
-      </h1>
-      <p class="subtitle text-[10px] sm:text-xs">VIDEOS & PERFORMANCES</p>
-    </header>
+  <div class="music-player-container relative w-full min-h-screen overflow-hidden">
+    <!-- Background Overlay -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-xl"></div>
 
-    <!-- Music Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-      <div 
-        v-for="music in musicList" 
-        :key="music.id"
-        class="music-card group cursor-pointer"
-        @click="openVideo(music)"
-      >
-        <div class="relative overflow-hidden rounded-2xl bg-black/30 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-rose-500/20">
-          <!-- Cover Image -->
-          <div class="aspect-video relative overflow-hidden">
-            <img 
-              v-if="music.cover" 
-              :src="music.cover" 
-              :alt="music.title"
-              class="w-full h-full object-cover"
-            />
-            <div 
-              v-else
-              class="w-full h-full bg-gradient-to-br from-rose-500/20 to-violet-500/20 flex items-center justify-center"
-            >
-              <svg class="w-16 h-16 text-white/40 group-hover:text-white/60 transition-colors" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
+    <div class="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+      <!-- Header -->
+      <header class="mb-8 md:mb-12 animate-slide-in text-center">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black italic tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/30">
+          Cover Songs
+        </h1>
+        <p class="text-base md:text-lg text-white/60 mt-2 tracking-widest">
+          翻唱切片 / 歌单图鉴 🎵
+        </p>
+      </header>
+
+      <!-- Cover Art Section -->
+      <div class="relative mb-8 flex justify-center">
+        <div class="relative w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-2xl shadow-rose-500/20 group">
+          <img 
+            :src="currentSong?.cover || '/bg.webp'" 
+            :alt="currentSong?.title || 'Album Cover'"
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <!-- Play overlay -->
+          <div 
+            class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+            @click="togglePlay"
+          >
+            <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
+              <svg v-if="!isPlaying" class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
               </svg>
+              <svg v-else class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Now Playing Info -->
+      <div v-if="currentSong" class="text-center mb-6 animate-fade-in">
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-1">{{ currentSong.title }}</h2>
+        <p class="text-white/60">{{ currentSong.artist }}</p>
+      </div>
+
+      <!-- Player Controls -->
+      <div v-if="currentSong" class="mb-8 px-4">
+        <!-- Progress Bar -->
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-xs text-white/50 w-10 text-right font-mono">{{ formatTime(currentTime) }}</span>
+          <div 
+            class="flex-1 h-1 bg-white/10 rounded-full cursor-pointer group"
+            @click="seek"
+          >
+            <div 
+              class="h-full bg-gradient-to-r from-rose-500 to-violet-500 rounded-full relative transition-all"
+              :style="{ width: duration ? `${(currentTime / duration) * 100}%` : '0%' }"
+            >
+              <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </div>
+          </div>
+          <span class="text-xs text-white/50 w-10 font-mono">{{ formatTime(duration) }}</span>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="flex items-center justify-center gap-6">
+          <button @click="playPrev" class="text-white/60 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+            </svg>
+          </button>
+          <button 
+            @click="togglePlay"
+            class="w-14 h-14 rounded-full bg-gradient-to-r from-rose-500 to-violet-500 flex items-center justify-center shadow-lg shadow-rose-500/30 hover:scale-105 transition-transform"
+          >
+            <svg v-if="!isPlaying" class="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg v-else class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+          </button>
+          <button @click="playNext" class="text-white/60 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Volume Control -->
+        <div class="flex items-center justify-center gap-2 mt-4">
+          <svg class="w-4 h-4 text-white/40" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+          </svg>
+          <div 
+            class="w-20 h-1 bg-white/10 rounded-full cursor-pointer"
+            @click="setVolume"
+          >
+            <div 
+              class="h-full bg-white/40 rounded-full"
+              :style="{ width: `${volume * 100}%` }"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="mb-6 flex items-center gap-4">
+        <div class="flex-1 relative">
+          <input 
+            v-model="searchQuery"
+            type="text"
+            placeholder="搜索歌曲，所有字段均可筛选"
+            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-rose-500/50 transition-colors"
+          />
+          <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+        <span class="text-white/40 text-sm whitespace-nowrap">共 {{ filteredSongs.length }} 个结果</span>
+      </div>
+
+      <!-- Song List -->
+      <div class="space-y-2">
+        <div 
+          v-for="song in filteredSongs" 
+          :key="song.id"
+          @click="playSong(song)"
+          class="song-item flex items-center gap-4 p-3 rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/5"
+          :class="{ 'bg-white/10': currentSong?.id === song.id }"
+        >
+          <!-- Cover -->
+          <div class="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+            <img :src="song.cover" :alt="song.title" class="w-full h-full object-cover" />
+            <div 
+              v-if="currentSong?.id === song.id && isPlaying"
+              class="absolute inset-0 bg-black/50 flex items-center justify-center"
+            >
+              <div class="flex gap-0.5">
+                <span class="w-1 h-3 bg-rose-400 rounded-full animate-bounce" style="animation-delay: 0s"></span>
+                <span class="w-1 h-4 bg-rose-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+                <span class="w-1 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+              </div>
             </div>
           </div>
 
           <!-- Info -->
-          <div class="p-5 flex flex-col" style="min-height: 140px">
-            <div class="flex items-center justify-between mb-2">
-              <h3 class="text-xl font-bold text-white group-hover:text-rose-300 transition-colors">{{ music.title }}</h3>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <h3 class="text-white font-medium truncate">{{ song.title }}</h3>
               <span 
-                class="text-xs px-3 py-1 rounded-full text-white whitespace-nowrap font-semibold shadow-lg"
-                :style="{ 
-                  backgroundColor: `${getAccentColor(music.accent)}66`, 
-                  border: `2px solid ${getAccentColor(music.accent)}99` 
-                }"
+                v-for="tag in song.tags.slice(0, 2)" 
+                :key="tag"
+                class="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 whitespace-nowrap"
               >
-                {{ music.type }}
+                {{ tag }}
               </span>
             </div>
-            <p class="text-sm text-white/80 mb-3 line-clamp-2">{{ music.desc }}</p>
-            <div class="flex items-center justify-between text-xs text-white/60 mt-auto">
-              <span>{{ music.date }}</span>
-              <span class="flex items-center gap-1">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M21 12.87c0 .36-.29.65-.65.65H3.65c-.36 0-.65-.29-.65-.65V5.13c0-.36.29-.65.65-.65h16.7c.36 0 .65.29.65.65v7.74zm-7.68-3.97c.65 0 1.18.53 1.18 1.18 0 .65-.53 1.18-1.18 1.18-.65 0-1.18-.53-1.18-1.18 0-.65.53-1.18 1.18-1.18z"/>
-                </svg>
-                Bilibili
-              </span>
-            </div>
+            <p class="text-white/50 text-sm truncate">{{ song.artist }}{{ song.subtitle ? ` · ${song.subtitle}` : '' }}</p>
           </div>
 
-          <!-- Hover Overlay -->
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <div class="text-white text-sm font-medium px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-              点击播放
-            </div>
-          </div>
+          <!-- Date -->
+          <span class="text-white/30 text-sm hidden sm:block">{{ song.date }}</span>
+
+          <!-- More Button -->
+          <button class="text-white/30 hover:text-white/60 transition-colors p-1">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+            </svg>
+          </button>
         </div>
+      </div>
+
+      <!-- Empty State -->
+      <div v-if="filteredSongs.length === 0" class="text-center py-12">
+        <p class="text-white/40">没有找到匹配的歌曲</p>
       </div>
     </div>
 
-    <!-- Video Modal -->
-    <Transition name="modal">
-      <div 
-        v-if="selectedVideo" 
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-        @click="closeVideo"
-      >
-        <div 
-          class="relative w-full max-w-4xl bg-black/40 backdrop-blur-md rounded-3xl border border-white/10 overflow-hidden shadow-2xl"
-          @click.stop
-        >
-          <!-- Close Button -->
-          <button 
-            @click="closeVideo"
-            class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 text-white border border-white/20 transition-colors"
-          >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
-
-          <!-- Video Title -->
-          <div class="p-6 pb-4">
-            <h2 class="text-2xl font-bold text-white mb-1">{{ selectedVideo.title }}</h2>
-            <p class="text-white/60">{{ selectedVideo.desc }}</p>
-          </div>
-
-          <!-- Bilibili Embed -->
-          <div class="aspect-video">
-            <iframe 
-              :src="`//player.bilibili.com/player.html?bvid=${selectedVideo.bvid}&page=1&high_quality=1&danmaku=0`"
-              scrolling="no" 
-              border="0" 
-              frameborder="no" 
-              framespacing="0" 
-              allowfullscreen="true"
-              class="w-full h-full"
-            ></iframe>
-          </div>
-
-          <!-- Footer Actions -->
-          <div class="p-6 pt-4 flex items-center justify-between bg-black/20">
-            <a 
-              :href="`https://www.bilibili.com/video/${selectedVideo.bvid}`" 
-              target="_blank"
-              class="text-sm text-white/60 hover:text-rose-400 transition-colors flex items-center gap-2"
-            >
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.659.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906l-1.174 1.12zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773H5.333zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373z"/>
-              </svg>
-              在 B站 观看
-            </a>
-            <span class="text-xs text-white/40">{{ selectedVideo.date }}</span>
-          </div>
-        </div>
-      </div>
-    </Transition>
+    <!-- Hidden Audio Element -->
+    <audio 
+      ref="audioRef"
+      @timeupdate="onTimeUpdate"
+      @loadedmetadata="onLoadedMetadata"
+      @ended="onEnded"
+    ></audio>
   </div>
 </template>
 
 <style scoped>
-/* Modal Transitions */
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.3s ease;
+.animate-slide-in {
+  animation: slideIn 0.6s ease-out forwards;
 }
 
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
 }
 
-.modal-enter-active > div,
-.modal-leave-active > div {
-  transition: transform 0.3s ease;
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.modal-enter-from > div,
-.modal-leave-to > div {
-  transform: scale(0.9);
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.song-item {
+  border: 1px solid transparent;
+}
+
+.song-item:hover {
+  border-color: rgba(255, 255, 255, 0.05);
 }
 </style>

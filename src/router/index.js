@@ -20,7 +20,7 @@ const router = createRouter({
     },
     {
       path: '/videos',
-      name: 'videos',
+      name: 'music',
       component: MusicView
     },
     {
