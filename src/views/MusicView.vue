@@ -1,69 +1,40 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-// 音乐数据 - 本地文件存储在 /public/music/ 目录
+// 腾讯云 COS 存储桶配置
+const COS_BASE_URL = import.meta.env.VITE_COS_BASE_URL || ''
+
+// 获取完整的资源 URL
+const getAssetUrl = (path) => {
+  if (!path) return '/bg.webp' // 默认封面
+  if (path.startsWith('http')) return path // 已经是完整 URL
+  return COS_BASE_URL ? `${COS_BASE_URL}${path}` : path
+}
+
+// 音乐数据 - 路径相对于 COS 存储桶根目录
 const songs = ref([
   {
     id: 1,
-    title: '血腥爱情故事',
+    title: '红山果',
     subtitle: '跟唱半首',
-    artist: '张惠妹',
-    date: '2025-01-31',
-    cover: '/music/covers/default.jpg',
-    audio: '/music/blood-love-story.mp3',
+    artist: '安与骑兵',
+    date: '2025-01-25',
+    cover: '/covers/红山果.jpg',
+    audio: '/audio/红山果.mp3',
     tags: ['翻唱']
   },
   {
     id: 2,
-    title: '星月神话',
-    subtitle: '电视剧《神话》插曲',
-    artist: '金莎',
-    date: '2025-01-31',
-    cover: '/music/covers/default.jpg',
-    audio: '/music/star-moon-myth.mp3',
-    tags: ['翻唱', '影视']
-  },
-  {
-    id: 3,
-    title: '向天再借五百年',
-    subtitle: '电视剧《康熙王朝》主题曲',
-    artist: '韩磊',
-    date: '2025-01-31',
-    cover: '/music/covers/default.jpg',
-    audio: '/music/500-years.mp3',
-    tags: ['翻唱', '影视']
-  },
-  {
-    id: 4,
-    title: '虚拟',
-    subtitle: '',
-    artist: '陈粒',
-    date: '2025-01-31',
-    cover: '/music/covers/default.jpg',
-    audio: '/music/virtual.mp3',
+    title: '我所有的夜有所梦里',
+    subtitle: '就是怦然心动',
+    artist: 'ZaZaZsu咂咂苏',
+    date: '2025-02-14',
+    cover: '/covers/我所有的夜有所梦里.jpg',
+    audio: '/audio/我所有的夜有所梦里.mp3',
     tags: ['翻唱']
   },
-  {
-    id: 5,
-    title: 'See You Again Song',
-    subtitle: 'US',
-    artist: 'Wiz Khalifa',
-    date: '2025-01-31',
-    cover: '/music/covers/default.jpg',
-    audio: '/music/see-you-again.mp3',
-    tags: ['翻唱', '英文']
-  },
-  {
-    id: 6,
-    title: '不该',
-    subtitle: '大喊大叫',
-    artist: '周杰伦, 张惠妹',
-    date: '2025-01-31',
-    cover: '/music/covers/default.jpg',
-    audio: '/music/bu-gai.mp3',
-    tags: ['翻唱']
-  }
 ])
+
 
 // 搜索
 const searchQuery = ref('')
@@ -95,7 +66,7 @@ const playSong = (song) => {
   currentSong.value = song
   isPlaying.value = true
   if (audioRef.value) {
-    audioRef.value.src = song.audio
+    audioRef.value.src = getAssetUrl(song.audio)
     audioRef.value.play()
   }
 }
@@ -185,7 +156,7 @@ onMounted(() => {
       <div class="relative mb-8 flex justify-center">
         <div class="relative w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-2xl shadow-rose-500/20 group">
           <img 
-            :src="currentSong?.cover || '/bg.webp'" 
+            :src="getAssetUrl(currentSong?.cover)" 
             :alt="currentSong?.title || 'Album Cover'"
             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -300,7 +271,7 @@ onMounted(() => {
         >
           <!-- Cover -->
           <div class="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-            <img :src="song.cover" :alt="song.title" class="w-full h-full object-cover" />
+            <img :src="getAssetUrl(song.cover)" :alt="song.title" class="w-full h-full object-cover" />
             <div 
               v-if="currentSong?.id === song.id && isPlaying"
               class="absolute inset-0 bg-black/50 flex items-center justify-center"
@@ -320,7 +291,7 @@ onMounted(() => {
               <span 
                 v-for="tag in song.tags.slice(0, 2)" 
                 :key="tag"
-                class="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 whitespace-nowrap"
+                class="text-[11px] px-2.5 py-1 rounded-full bg-rose-500 text-white font-semibold whitespace-nowrap"
               >
                 {{ tag }}
               </span>
