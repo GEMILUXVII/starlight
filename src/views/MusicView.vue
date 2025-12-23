@@ -12,29 +12,10 @@ const getAssetUrl = (path) => {
   return COS_BASE_URL ? `${COS_BASE_URL}${path}` : path
 }
 
-// 音乐数据 - 路径相对于 COS 存储桶根目录
-const songs = ref([
-  {
-    id: 1,
-    title: '红山果',
-    subtitle: '安与骑兵',
-    artist: '安与骑兵',
-    date: '2025-01-25',
-    cover: '/covers/红山果.jpg',
-    audio: '/audio/红山果.mp3',
-    tags: ['翻唱']
-  },
-  {
-    id: 2,
-    title: '我所有的夜有所梦里',
-    subtitle: '就是怦然心动',
-    artist: 'ZaZaZsu咂咂苏',
-    date: '2025-02-14',
-    cover: '/covers/我所有的夜有所梦里.jpg',
-    audio: '/audio/我所有的夜有所梦里.mp3',
-    tags: ['翻唱']
-  },
-])
+import { songs as songsData } from '../data/songs.js'
+
+// 音乐数据
+const songs = ref(songsData)
 
 
 // 搜索
