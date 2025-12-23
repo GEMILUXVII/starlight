@@ -18,7 +18,7 @@ const biliUser = ref({
     <div class="relative z-10 w-full max-w-7xl mx-auto px-6 py-20 min-h-screen flex flex-col">
       <!-- Header -->
       <header class="mb-20 animate-slide-in">
-        <h1 class="text-7xl md:text-8xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/20 uppercase">
+        <h1 class="text-7xl md:text-8xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/20 uppercase w-fit pr-6">
           About
         </h1>
         <div class="flex items-center gap-4 mt-2 ml-2">
