@@ -16,7 +16,7 @@ const songs = ref([
   {
     id: 1,
     title: '红山果',
-    subtitle: '跟唱半首',
+    subtitle: '安与骑兵',
     artist: '安与骑兵',
     date: '2025-01-25',
     cover: '/covers/红山果.jpg',
@@ -144,7 +144,7 @@ onMounted(() => {
     <div class="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-8 md:py-12">
       <!-- Header -->
       <header class="mb-8 md:mb-12 animate-slide-in text-center">
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black italic tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/30">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black italic tracking-tight text-white drop-shadow-lg">
           Cover Songs
         </h1>
         <p class="text-base md:text-lg text-white/60 mt-2 tracking-widest">
@@ -186,60 +186,88 @@ onMounted(() => {
       <!-- Player Controls -->
       <div v-if="currentSong" class="mb-8 px-4">
         <!-- Progress Bar -->
-        <div class="flex items-center gap-3 mb-4">
-          <span class="text-xs text-white/50 w-10 text-right font-mono">{{ formatTime(currentTime) }}</span>
+        <div class="group/progress flex items-center gap-4 mb-8">
+          <span class="text-xs text-white/40 w-10 text-right font-mono tracking-wider">{{ formatTime(currentTime) }}</span>
+          
           <div 
-            class="flex-1 h-1 bg-white/10 rounded-full cursor-pointer group"
+            class="flex-1 h-8 flex items-center cursor-pointer relative"
             @click="seek"
           >
+            <!-- Track -->
+            <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm"></div>
+            
+            <!-- Progress Overlay -->
             <div 
-              class="h-full bg-gradient-to-r from-rose-500 to-violet-500 rounded-full relative transition-all"
+              class="absolute left-0 h-1 bg-gradient-to-r from-char-blue to-char-silver rounded-full shadow-[0_0_12px_rgba(46,92,255,0.6)]"
               :style="{ width: duration ? `${(currentTime / duration) * 100}%` : '0%' }"
+            ></div>
+
+            <!-- Thumb/Glow -->
+            <div 
+              class="absolute w-3 h-3 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.8)] opacity-0 scale-50 group-hover/progress:opacity-100 group-hover/progress:scale-100 transition-all duration-300 ease-out pointer-events-none"
+              :style="{ left: duration ? `calc(${(currentTime / duration) * 100}% - 6px)` : '0' }"
             >
-              <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div class="absolute inset-0 bg-char-blue/50 rounded-full animate-ping"></div>
             </div>
           </div>
-          <span class="text-xs text-white/50 w-10 font-mono">{{ formatTime(duration) }}</span>
+
+          <span class="text-xs text-white/40 w-10 font-mono tracking-wider">{{ formatTime(duration) }}</span>
         </div>
 
         <!-- Control Buttons -->
-        <div class="flex items-center justify-center gap-6">
-          <button @click="playPrev" class="text-white/60 hover:text-white transition-colors">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-center justify-center gap-8 md:gap-10">
+          <button 
+            @click="playPrev" 
+            class="text-white/40 hover:text-white transition-all duration-300 hover:scale-110 active:scale-95"
+          >
+            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
             </svg>
           </button>
+          
           <button 
             @click="togglePlay"
-            class="w-14 h-14 rounded-full bg-gradient-to-r from-rose-500 to-violet-500 flex items-center justify-center shadow-lg shadow-rose-500/30 hover:scale-105 transition-transform"
+            class="group relative w-16 h-16 flex items-center justify-center transition-transform duration-300 hover:scale-105 active:scale-95"
           >
-            <svg v-if="!isPlaying" class="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-            <svg v-else class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-            </svg>
+            <!-- Glow Effect -->
+            <div class="absolute inset-0 bg-char-blue rounded-full blur-md opacity-40 group-hover:opacity-70 transition-opacity duration-500"></div>
+            
+            <!-- Button Body -->
+            <div class="relative w-full h-full rounded-full bg-gradient-to-tr from-char-navy to-char-blue flex items-center justify-center shadow-xl shadow-char-blue/30 border border-white/10">
+              <svg v-if="!isPlaying" class="w-8 h-8 text-white ml-1 fill-current drop-shadow-md" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <svg v-else class="w-8 h-8 text-white fill-current drop-shadow-md" viewBox="0 0 24 24">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+              </svg>
+            </div>
           </button>
-          <button @click="playNext" class="text-white/60 hover:text-white transition-colors">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+
+          <button 
+            @click="playNext" 
+            class="text-white/40 hover:text-white transition-all duration-300 hover:scale-110 active:scale-95"
+          >
+            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
             </svg>
           </button>
         </div>
 
         <!-- Volume Control -->
-        <div class="flex items-center justify-center gap-2 mt-4">
-          <svg class="w-4 h-4 text-white/40" fill="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-center justify-center gap-3 mt-8 group/volume">
+          <svg class="w-4 h-4 text-white/30 group-hover/volume:text-white/60 transition-colors" fill="currentColor" viewBox="0 0 24 24">
             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
           </svg>
           <div 
-            class="w-20 h-1 bg-white/10 rounded-full cursor-pointer"
+            class="w-24 h-6 flex items-center cursor-pointer"
             @click="setVolume"
           >
-            <div 
-              class="h-full bg-white/40 rounded-full"
-              :style="{ width: `${volume * 100}%` }"
-            ></div>
+            <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+              <div 
+                class="h-full bg-white/60 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.4)]"
+                :style="{ width: `${volume * 100}%` }"
+              ></div>
+            </div>
           </div>
         </div>
       </div>
@@ -261,49 +289,64 @@ onMounted(() => {
       </div>
 
       <!-- Song List -->
-      <div class="space-y-2">
+      <div class="space-y-3">
         <div 
           v-for="song in filteredSongs" 
           :key="song.id"
           @click="playSong(song)"
-          class="song-item flex items-center gap-4 p-3 rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/5"
-          :class="{ 'bg-white/10': currentSong?.id === song.id }"
+          class="song-item group flex items-center gap-4 p-3 rounded-2xl cursor-pointer transition-all duration-300 border border-transparent hover:border-white/10 hover:bg-white/5 active:scale-[0.99]"
+          :class="{ 'bg-white/10 !border-white/10 shadow-lg shadow-black/20': currentSong?.id === song.id }"
         >
           <!-- Cover -->
-          <div class="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-            <img :src="getAssetUrl(song.cover)" :alt="song.title" class="w-full h-full object-cover" />
+          <div class="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 shadow-md group-hover:shadow-xl transition-shadow">
+            <img :src="getAssetUrl(song.cover)" :alt="song.title" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            
+            <!-- Playing Overlay -->
             <div 
               v-if="currentSong?.id === song.id && isPlaying"
-              class="absolute inset-0 bg-black/50 flex items-center justify-center"
+              class="absolute inset-0 bg-char-navy/60 backdrop-blur-[2px] flex items-center justify-center text-char-blue"
             >
-              <div class="flex gap-0.5">
-                <span class="w-1 h-3 bg-rose-400 rounded-full animate-bounce" style="animation-delay: 0s"></span>
-                <span class="w-1 h-4 bg-rose-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
-                <span class="w-1 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+              <div class="flex items-end gap-[3px] h-4">
+                <span class="w-1 bg-current rounded-full animate-music-bar-1 opacity-80"></span>
+                <span class="w-1 bg-white rounded-full animate-music-bar-2"></span>
+                <span class="w-1 bg-current rounded-full animate-music-bar-3 opacity-80"></span>
               </div>
             </div>
           </div>
 
           <!-- Info -->
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <h3 class="text-white font-medium truncate">{{ song.title }}</h3>
-              <span 
-                v-for="tag in song.tags.slice(0, 2)" 
-                :key="tag"
-                class="text-[11px] px-2.5 py-1 rounded-full bg-rose-500 text-white font-semibold whitespace-nowrap"
+          <div class="flex-1 min-w-0 flex flex-col justify-center">
+            <div class="flex items-center gap-3 mb-1">
+              <h3 
+                class="font-bold text-lg truncate transition-colors"
+                :class="currentSong?.id === song.id ? 'text-char-blue' : 'text-white group-hover:text-white/90'"
               >
-                {{ tag }}
-              </span>
+                {{ song.title }}
+              </h3>
+              <div v-if="song.tags.length" class="flex gap-1.5">
+                 <span 
+                  v-for="tag in song.tags.slice(0, 2)" 
+                  :key="tag"
+                  class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold border"
+                  :class="currentSong?.id === song.id ? 'border-char-blue/30 text-char-blue bg-char-blue/10' : 'border-white/10 text-white/40 group-hover:border-white/20'"
+                >
+                  {{ tag }}
+                </span>
+              </div>
             </div>
-            <p class="text-white/50 text-sm truncate">{{ song.artist }}{{ song.subtitle ? ` · ${song.subtitle}` : '' }}</p>
+            <p class="text-sm truncate transition-colors" :class="currentSong?.id === song.id ? 'text-white/70' : 'text-white/40 group-hover:text-white/60'">
+              {{ song.artist }}
+              <span v-if="song.subtitle" class="opacity-60"> · {{ song.subtitle }}</span>
+            </p>
           </div>
 
-          <!-- Date -->
-          <span class="text-white/30 text-sm hidden sm:block">{{ song.date }}</span>
+          <!-- Date/Status -->
+          <div class="hidden sm:flex flex-col items-end gap-1">
+             <span class="text-xs font-mono text-white/20 group-hover:text-white/40 transition-colors">{{ song.date }}</span>
+          </div>
 
-          <!-- More Button -->
-          <button class="text-white/30 hover:text-white/60 transition-colors p-1">
+          <!-- Action Button -->
+          <button class="w-8 h-8 rounded-full flex items-center justify-center text-white/20 hover:text-white hover:bg-white/10 transition-all opacity-0 group-hover:opacity-100">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
             </svg>
@@ -336,6 +379,25 @@ onMounted(() => {
   animation: fadeIn 0.4s ease-out forwards;
 }
 
+.animate-music-bar-1 {
+  animation: musicBar 0.5s ease-in-out infinite alternate;
+}
+
+.animate-music-bar-2 {
+  animation: musicBar 0.7s ease-in-out infinite alternate;
+  animation-delay: 0.1s;
+}
+
+.animate-music-bar-3 {
+  animation: musicBar 0.9s ease-in-out infinite alternate;
+  animation-delay: 0.2s;
+}
+
+@keyframes musicBar {
+  0% { height: 4px; opacity: 0.5; }
+  100% { height: 16px; opacity: 1; }
+}
+
 @keyframes slideIn {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -347,10 +409,7 @@ onMounted(() => {
 }
 
 .song-item {
-  border: 1px solid transparent;
-}
-
-.song-item:hover {
-  border-color: rgba(255, 255, 255, 0.05);
+  /* hardware acceleration for smoother transitions */
+  transform: translateZ(0);
 }
 </style>
