@@ -4,7 +4,7 @@ import { ref } from 'vue'
 // Bilibili User Data (using local avatar to avoid CDN issues)
 const biliUser = ref({
   uid: '403039446',
-  name: 'GEMILUX', 
+  name: '四季Destination', 
   face: '/ava.jpg',
   sign: ''
 })
