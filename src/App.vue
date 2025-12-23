@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, computed } from 'vue'
 import { RouterView, RouterLink, useRoute } from 'vue-router'
-import { Analytics } from '@vercel/analytics/vue'
+// Vercel Analytics removed - site is self-hosted
 import { OverlayScrollbars } from 'overlayscrollbars'
 import 'overlayscrollbars/overlayscrollbars.css'
 
@@ -137,7 +137,7 @@ const isHome = computed(() => route.name === 'home')
 </script>
 
 <template>
-  <Analytics />
+  <!-- Analytics removed - site is self-hosted -->
   
   <!-- Dual Background Layers for Elegant Cross-fade -->
   <div 
