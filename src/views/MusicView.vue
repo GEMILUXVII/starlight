@@ -81,7 +81,7 @@ onMounted(() => initAudio())
           Cover Songs
         </h1>
         <p class="text-base md:text-lg text-white/60 mt-2 tracking-widest">
-          翻唱切片 / 歌单图鉴 🎵
+          翻唱切片 / 歌单图鉴
         </p>
       </header>
 
