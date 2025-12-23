@@ -159,7 +159,10 @@ watch(() => route.path, () => {
   <div 
     class="bg-layer fixed inset-0 -z-30 bg-cover bg-top bg-no-repeat transition-opacity duration-700 ease-in-out will-change-[opacity]"
     style="background-image: url('/bg2.webp'); filter: brightness(0.5);"
-    :class="isTimeline ? 'opacity-100' : 'opacity-0'"
+    :class="[
+      isTimeline ? 'opacity-100' : 'opacity-0',
+      isTimeline ? 'bg-timeline-mobile' : ''
+    ]"
   ></div>
   <div class="glass-overlay"></div>
   
@@ -308,5 +311,12 @@ watch(() => route.path, () => {
 .menu-fade-enter-from,
 .menu-fade-leave-to {
   opacity: 0;
+}
+
+/* Timeline background mobile positioning - show half face on the right */
+@media (max-width: 768px) {
+  .bg-timeline-mobile {
+    background-position: 20% top !important;
+  }
 }
 </style>
