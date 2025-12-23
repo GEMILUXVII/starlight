@@ -19,8 +19,8 @@ const router = createRouter({
       component: TimelineView
     },
     {
-      path: '/videos',
-      name: 'videos',
+      path: '/music',
+      name: 'music',
       component: MusicView
     },
     {
