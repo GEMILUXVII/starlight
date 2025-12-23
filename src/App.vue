@@ -316,7 +316,7 @@ watch(() => route.path, () => {
 /* Timeline background mobile positioning - show half face on the right */
 @media (max-width: 768px) {
   .bg-timeline-mobile {
-    background-position: 20% top !important;
+    background-position: 30% top !important;
   }
 }
 </style>
