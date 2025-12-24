@@ -74,8 +74,8 @@ const biliUser = ref({
             <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-4">LEGAL NOTICE</h3>
             <div class="space-y-4 text-sm text-white/70 leading-relaxed">
               <p>
-                <strong class="text-white">视频版权：</strong><br>
-                所有视频内容均使用 Bilibili 官方播放器嵌入，版权归属星瞳官方及原作者。
+                <strong class="text-white">内容版权：</strong><br>
+                所有音频为星瞳翻唱作品切片，仅供学习交流使用，版权归属星瞳及原作曲者。如有侵权请联系删除。
               </p>
               <p>
                 <strong class="text-white">资料来源：</strong><br>
@@ -93,11 +93,13 @@ const biliUser = ref({
         </div>
       </div>
 
-      <!-- Footer (Kept same content, adjusted style) -->
-      <footer class="mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/40 animate-fade-in">
-        <p class="font-mono">© 2025 <a href="https://github.com/GEMILUXVII" target="_blank" class="text-white/60 hover:text-white transition-colors">GEMILUXVII</a></p>
-        <p class="font-mono">
-          POWERED BY VUE & <a href="https://github.com/GEMILUXVII/starlight" target="_blank" class="text-white/60 hover:text-white transition-colors">STARLIGHT</a>
+      <!-- Footer -->
+      <footer class="mt-20 pt-8 border-t border-white/10 animate-fade-in text-center">
+        <p class="text-sm text-white/30 font-mono mb-2">POWERED BY Vue 3 / Vite / TailwindCSS</p>
+        <p class="text-sm text-white/40 font-mono">
+          © 2025 <a href="https://github.com/GEMILUXVII" target="_blank" class="text-white/60 hover:text-white transition-colors">GEMILUXVII</a>
+          · 
+          <a href="https://github.com/GEMILUXVII/starlight" target="_blank" class="text-white/60 hover:text-white transition-colors">STARLIGHT</a>
         </p>
       </footer>
     </div>
