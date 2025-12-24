@@ -17,6 +17,7 @@ export const events = [
     month: 6,
     day: 11,
     year: 2021,
+    showYears: true,
     accent: 'violet',
     description: 'B站直播出道'
   },
@@ -27,15 +28,5 @@ export const events = [
     day: 14,
     accent: 'cyan',
     description: '情人节'
-  },
-  {
-    id: 'anniversary',
-    title: '5周年',
-    month: 6,
-    day: 11,
-    year: 2021,
-    showYears: true,
-    accent: 'amber',
-    description: '出道周年'
   }
 ]
