@@ -268,11 +268,11 @@ onUnmounted(() => {
 }
 
 .mobile-footer {
-  @apply relative z-10 mb-4;
+  @apply relative z-10 mb-4 w-full flex justify-center;
 }
 
 .plain-link {
-  @apply text-white/30 text-xs tracking-widest flex items-center gap-2 transition-colors;
+  @apply text-white/30 text-xs tracking-widest inline-flex items-center gap-2 transition-colors relative;
 }
 
 .plain-link:active {
@@ -280,7 +280,7 @@ onUnmounted(() => {
 }
 
 .arrow {
-  @apply opacity-0 -translate-x-2 transition-all;
+  @apply opacity-0 transition-all absolute -right-4;
 }
 
 .plain-link:active .arrow {
