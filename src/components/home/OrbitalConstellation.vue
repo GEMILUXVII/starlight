@@ -117,7 +117,7 @@ onUnmounted(() => {
         '--x': `${fingerX + starPositions[index].offsetX}vw`,
         '--y': `${fingerY + starPositions[index].offsetY}vh`,
         '--color': accentColors[event.accent],
-        '--delay': `${index * 0.15}s`,
+        '--delay': `${index * 0.75}s`,
         '--twinkle': Math.sin(twinklePhase + index * 1.5) * 0.3 + 0.7
       }"
       @mouseenter="hoveredEvent = event.id"
@@ -211,8 +211,10 @@ onUnmounted(() => {
 }
 
 .star-icon {
-  @apply text-xl md:text-2xl;
+  @apply text-3xl md:text-4xl;
   color: var(--color);
+  animation: starBreathe 3s ease-in-out infinite;
+  animation-delay: var(--delay);
 }
 
 /* 标签 */
@@ -295,6 +297,17 @@ onUnmounted(() => {
 @keyframes twinkle {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 0.8; }
+}
+
+@keyframes starBreathe {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 4px currentColor);
+  }
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 12px currentColor) drop-shadow(0 0 20px currentColor);
+  }
 }
 
 @keyframes starAppear {
