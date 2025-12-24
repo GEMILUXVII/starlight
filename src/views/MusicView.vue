@@ -92,7 +92,24 @@ const onEnded = () => {
   }
 }
 
-onMounted(() => initAudio())
+onMounted(() => {
+  initAudio()
+  
+  // 处理分享链接：检查 URL 参数中是否有指定歌曲
+  const urlParams = new URLSearchParams(window.location.search)
+  const songId = urlParams.get('song')
+  if (songId) {
+    const sharedSong = songs.value.find(s => s.id === parseInt(songId))
+    if (sharedSong) {
+      // 延迟播放，确保音频元素已初始化
+      setTimeout(() => {
+        playSong(sharedSong)
+      }, 100)
+    }
+    // 清除 URL 参数，避免刷新后重复播放
+    window.history.replaceState({}, '', window.location.pathname)
+  }
+})
 </script>
 
 <template>

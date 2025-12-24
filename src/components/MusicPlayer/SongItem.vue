@@ -1,5 +1,7 @@
 <script setup>
-defineProps({
+import { ref } from 'vue'
+
+const props = defineProps({
   song: {
     type: Object,
     required: true
@@ -19,6 +21,21 @@ defineProps({
 })
 
 const emit = defineEmits(['click'])
+
+// 分享功能
+const copied = ref(false)
+const shareSong = async () => {
+  const url = `${window.location.origin}${window.location.pathname}?song=${props.song.id}`
+  try {
+    await navigator.clipboard.writeText(url)
+    copied.value = true
+    setTimeout(() => {
+      copied.value = false
+    }, 2000)
+  } catch (err) {
+    console.error('复制失败:', err)
+  }
+}
 </script>
 
 <template>
@@ -75,10 +92,20 @@ const emit = defineEmits(['click'])
        <span class="text-xs font-mono text-white/20 group-hover:text-white/40 transition-colors">{{ song.date }}</span>
     </div>
 
-    <!-- Action Button -->
-    <button class="w-8 h-8 rounded-full flex items-center justify-center text-white/20 hover:text-white hover:bg-white/10 transition-all opacity-0 group-hover:opacity-100">
-      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+    <!-- Share Button -->
+    <button 
+      @click.stop="shareSong"
+      class="w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
+      :class="copied ? 'text-green-400 bg-green-400/20' : 'text-white/20 hover:text-white hover:bg-white/10'"
+      :title="copied ? '已复制链接' : '分享歌曲'"
+    >
+      <!-- Check Icon (copied) -->
+      <svg v-if="copied" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+      </svg>
+      <!-- Share Icon -->
+      <svg v-else class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
       </svg>
     </button>
   </div>
