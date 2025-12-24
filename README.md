@@ -8,21 +8,69 @@
   <strong>星星的星 闪耀双瞳的瞳</strong>
 </div>
 
+## 功能特性
+
+- **倒计时** - 生日、出道纪念日等重要日期倒计时
+- **时间线** - 星瞳重要事件时间线
+- **音乐播放器** - 翻唱歌曲在线播放
+  - 单曲循环 / 随机播放
+  - 音量记忆 / 静音切换
+  - 键盘快捷键支持
+  - 分享歌曲链接
+- **留言板** - Artalk 评论系统集成
+- **交互式粒子背景**
+
 ## 技术栈
 
-Vue 3 + Vite + TailwindCSS
+- **框架**: Vue 3 + Vite
+- **样式**: TailwindCSS
+- **路由**: Vue Router (Hash Mode)
+- **存储**: Cloudflare R2 (音乐资源)
+- **评论**: Artalk
+
+## 键盘快捷键
+
+| 按键 | 功能 |
+|------|------|
+| `Space` | 播放/暂停 |
+| `←` | 上一首 |
+| `→` | 下一首 |
+| `↑` | 音量增加 |
+| `↓` | 音量减少 |
 
 ## 开发
 
 ```bash
+# 安装依赖
 npm install
+
+# 启动开发服务器
 npm run dev
+
+# 构建生产版本
+npm run build
 ```
 
-## 部署
+## 环境变量
 
-```bash
-npm run build
+参考 `.env.example` 配置：
+
+```env
+VITE_ARTALK_SERVER=你的Artalk服务地址
+VITE_STORAGE_BASE_URL=你的云存储地址
+```
+
+## 项目结构
+
+```
+src/
+├── assets/          # 静态资源和全局样式
+├── components/      # 可复用组件
+│   └── MusicPlayer/ # 音乐播放器组件
+├── composables/     # Vue Composables
+├── data/            # 数据文件 (events, songs)
+├── router/          # 路由配置
+└── views/           # 页面视图
 ```
 
 ## 许可证
