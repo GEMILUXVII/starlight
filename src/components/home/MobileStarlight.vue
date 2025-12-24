@@ -102,7 +102,7 @@ onUnmounted(() => {
 
     <!-- 顶部标题 -->
     <div class="top-bar">
-      <h1 class="brand">STARSIDE</h1>
+      <h1 class="brand">STARLUX</h1>
       <span class="indicator">{{ currentIndex + 1 }} / {{ events.length }}</span>
     </div>
 

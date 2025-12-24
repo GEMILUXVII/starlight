@@ -1,41 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <defs>
-    <!-- Main star gradient -->
-    <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#fff7a1"/>
-      <stop offset="30%" style="stop-color:#fcd34d"/>
-      <stop offset="70%" style="stop-color:#fbbf24"/>
-      <stop offset="100%" style="stop-color:#f59e0b"/>
-    </linearGradient>
-    <!-- Shine gradient -->
-    <radialGradient id="shine" cx="30%" cy="30%" r="50%">
-      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8"/>
-      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+    <!-- Bright blue gradient -->
+    <radialGradient id="eyeGrad" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#7dd3fc"/>
+      <stop offset="40%" style="stop-color:#38bdf8"/>
+      <stop offset="80%" style="stop-color:#0ea5e9"/>
+      <stop offset="100%" style="stop-color:#0284c7"/>
     </radialGradient>
-    <!-- Glow effect -->
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+    <!-- Soft glow -->
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
       <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
   
-  <!-- Main star with glow -->
-  <polygon 
-    points="16,3 19.5,11.5 29,12.5 22,19 24,28 16,24 8,28 10,19 3,12.5 12.5,11.5" 
-    fill="url(#starGradient)" 
-    filter="url(#glow)"
-    stroke="#f59e0b"
-    stroke-width="0.3"
-  />
+  <!-- Main eye circle -->
+  <circle cx="16" cy="16" r="13" fill="url(#eyeGrad)" filter="url(#softGlow)"/>
   
-  <!-- Inner shine highlight -->
-  <polygon 
-    points="16,6 18,11 24,11.5 19.5,16 21,22 16,19 11,22 12.5,16 8,11.5 14,11" 
-    fill="url(#shine)"
-    opacity="0.6"
-  />
+  <!-- Subtle inner ring -->
+  <circle cx="16" cy="16" r="9" fill="none" stroke="#bae6fd" stroke-width="0.5" opacity="0.5"/>
+  
+  <!-- Big anime highlight -->
+  <ellipse cx="11" cy="11" rx="4" ry="3.5" fill="white" opacity="0.9"/>
+  
+  <!-- Small secondary highlight -->
+  <circle cx="20" cy="12" r="1.5" fill="white" opacity="0.7"/>
+  
+  <!-- Cute sparkle star -->
+  <text x="22" y="24" font-size="6" fill="white" opacity="0.8">✦</text>
 </svg>
