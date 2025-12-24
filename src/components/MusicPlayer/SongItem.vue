@@ -25,7 +25,8 @@ const emit = defineEmits(['click'])
 // 分享功能
 const copied = ref(false)
 const shareSong = async () => {
-  const url = `${window.location.origin}${window.location.pathname}?song=${props.song.id}`
+  // 使用 hash 路由格式：/#/music?song=id
+  const url = `${window.location.origin}${window.location.pathname}#/music?song=${props.song.id}`
   try {
     await navigator.clipboard.writeText(url)
     copied.value = true

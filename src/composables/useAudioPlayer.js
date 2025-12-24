@@ -14,13 +14,12 @@ export function useAudioPlayer(getAssetUrl) {
   const audioRef = ref(null)
 
   // 播放控制
-  const playSong = (song, songsList, forceRestart = false) => {
+  const playSong = async (song, songsList, forceRestart = false) => {
     if (currentSong.value?.id === song.id && !forceRestart) {
       togglePlay()
       return
     }
     currentSong.value = song
-    isPlaying.value = true
     if (audioRef.value) {
       // 如果是同一首歌，只需要重置时间
       if (audioRef.value.src === getAssetUrl(song.audio) && forceRestart) {
@@ -28,18 +27,31 @@ export function useAudioPlayer(getAssetUrl) {
       } else {
         audioRef.value.src = getAssetUrl(song.audio)
       }
-      audioRef.value.play()
+      try {
+        await audioRef.value.play()
+        isPlaying.value = true
+      } catch (err) {
+        // 浏览器阻止自动播放，需要用户交互
+        console.warn('自动播放被阻止，需要用户点击播放:', err.message)
+        isPlaying.value = false
+      }
     }
   }
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (!audioRef.value || !currentSong.value) return
     if (isPlaying.value) {
       audioRef.value.pause()
+      isPlaying.value = false
     } else {
-      audioRef.value.play()
+      try {
+        await audioRef.value.play()
+        isPlaying.value = true
+      } catch (err) {
+        console.warn('播放失败:', err.message)
+        isPlaying.value = false
+      }
     }
-    isPlaying.value = !isPlaying.value
   }
 
   const seek = (e) => {
