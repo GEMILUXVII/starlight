@@ -110,16 +110,15 @@ onUnmounted(() => {
 
 <template>
   <div 
-    class="music-player-container relative w-full overflow-hidden"
-    :class="currentSong ? 'h-screen' : 'min-h-screen'"
+    class="music-player-container relative w-full overflow-hidden min-h-screen"
+    :class="currentSong ? 'lg:h-screen' : ''"
   >
     <!-- Background Overlay -->
     <div class="absolute inset-0 bg-black/60 backdrop-blur-xl"></div>
 
-    <!-- Main Content Container -->
     <div 
       class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12"
-      :class="currentSong ? 'h-full flex flex-col' : ''"
+      :class="currentSong ? 'lg:h-full lg:flex lg:flex-col' : ''"
     >
       <!-- Header -->
       <header class="mb-8 md:mb-10 animate-slide-in">
@@ -135,7 +134,7 @@ onUnmounted(() => {
       <!-- Dynamic Layout: Split when playing, centered when not -->
       <div :class="[
         'transition-all duration-500 ease-out',
-        currentSong ? 'grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 flex-1 min-h-0' : 'flex flex-col items-center'
+        currentSong ? 'grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 lg:flex-1 lg:min-h-0' : 'flex flex-col items-center'
       ]">
         
         <!-- Left Side: Player (only when song is selected) -->
@@ -196,7 +195,7 @@ onUnmounted(() => {
         <!-- Right Side: Song List -->
         <div 
           :class="[
-            currentSong ? 'w-full flex flex-col min-h-0' : 'w-full max-w-2xl'
+            currentSong ? 'w-full lg:flex lg:flex-col lg:min-h-0' : 'w-full max-w-2xl'
           ]"
         >
           <!-- Search Bar -->
@@ -219,7 +218,7 @@ onUnmounted(() => {
           <div 
             :class="[
               'space-y-3',
-              currentSong ? 'flex-1 overflow-y-auto pr-2 song-list-scroll' : ''
+              currentSong ? 'lg:flex-1 lg:overflow-y-auto lg:pr-2 song-list-scroll' : ''
             ]"
           >
             <SongItem
