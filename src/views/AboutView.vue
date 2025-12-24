@@ -74,8 +74,8 @@ const biliUser = ref({
             <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-4">LEGAL NOTICE</h3>
             <div class="space-y-4 text-sm text-white/70 leading-relaxed">
               <p>
-                <strong class="text-white">视频版权：</strong><br>
-                所有视频内容均使用 Bilibili 官方播放器嵌入，版权归属星瞳官方及原作者。
+                <strong class="text-white">内容版权：</strong><br>
+                所有音频为星瞳翻唱作品切片，仅供学习交流使用，版权归属星瞳及原作曲者。如有侵权请联系删除。
               </p>
               <p>
                 <strong class="text-white">资料来源：</strong><br>
