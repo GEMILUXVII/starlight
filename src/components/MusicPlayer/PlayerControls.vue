@@ -12,7 +12,7 @@ const emit = defineEmits(['prev', 'next', 'toggle'])
 </script>
 
 <template>
-  <div class="flex items-center justify-center lg:justify-start gap-8 md:gap-10">
+  <div class="flex items-center justify-center gap-8 md:gap-10">
     <!-- Previous Button -->
     <button 
       @click="emit('prev')" 

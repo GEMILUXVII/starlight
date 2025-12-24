@@ -98,7 +98,7 @@ onMounted(() => initAudio())
         <!-- Left Side: Player (only when song is selected) -->
         <div v-if="currentSong" class="lg:sticky lg:top-8 lg:self-start animate-fade-in">
           <!-- Cover Art -->
-          <div class="relative mb-6 flex justify-center lg:justify-start">
+          <div class="relative mb-6 flex justify-center">
             <CoverArt
               :cover-url="getAssetUrl(currentSong?.cover)"
               :title="currentSong?.title"
@@ -108,7 +108,7 @@ onMounted(() => initAudio())
           </div>
 
           <!-- Now Playing Info -->
-          <div class="text-center lg:text-left mb-6">
+          <div class="text-center mb-6">
             <h2 class="text-xl md:text-2xl font-bold text-white mb-1">{{ currentSong.title }}</h2>
             <p class="text-white/60">{{ currentSong.artist }}</p>
             <p v-if="currentSong.subtitle" class="text-white/40 text-sm mt-1">原唱：{{ currentSong.subtitle }}</p>
@@ -126,15 +126,17 @@ onMounted(() => initAudio())
             </div>
 
             <!-- Control Buttons -->
-            <PlayerControls
-              :is-playing="isPlaying"
-              @prev="playPrev"
-              @next="playNext"
-              @toggle="togglePlay"
-            />
+            <div class="flex justify-center">
+              <PlayerControls
+                :is-playing="isPlaying"
+                @prev="playPrev"
+                @next="playNext"
+                @toggle="togglePlay"
+              />
+            </div>
 
             <!-- Volume Control -->
-            <div class="mt-6">
+            <div class="mt-6 flex justify-center">
               <VolumeControl
                 :volume="volume"
                 @change="setVolume"
