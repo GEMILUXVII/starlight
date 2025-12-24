@@ -71,11 +71,11 @@ const shareSong = async () => {
         >
           {{ song.title }}
         </h3>
-        <div v-if="song.tags.length" class="flex gap-1.5">
+        <div v-if="song.tags.length" class="flex gap-1.5 flex-shrink-0">
            <span 
             v-for="tag in song.tags.slice(0, 2)" 
             :key="tag"
-            class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold border"
+            class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold border whitespace-nowrap"
             :class="isActive ? 'border-char-blue/30 text-char-blue bg-char-blue/10' : 'border-white/10 text-white/40 group-hover:border-white/20'"
           >
             {{ tag }}

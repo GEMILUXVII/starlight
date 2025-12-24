@@ -48,30 +48,6 @@ const handleMute = (v) => {
   setVolumeValue(v)
 }
 
-onMounted(() => {
-  // 处理分享链接：检查 URL 参数中是否有指定歌曲
-  // hash 路由格式：#/music?song=id
-  const hash = window.location.hash
-  const queryIndex = hash.indexOf('?')
-  if (queryIndex !== -1) {
-    const queryString = hash.substring(queryIndex + 1)
-    const urlParams = new URLSearchParams(queryString)
-    const songId = urlParams.get('song')
-    
-    if (songId) {
-      const sharedSong = audioPlayerStore.songs.find(s => s.id === parseInt(songId))
-      if (sharedSong) {
-        // 延迟播放，确保音频元素已初始化
-        setTimeout(() => {
-          playSong(sharedSong)
-        }, 100)
-      }
-      // 清除 URL 参数，保留路由路径
-      window.history.replaceState({}, '', window.location.pathname + '#/music')
-    }
-  }
-})
-
 // 键盘快捷键
 const handleKeydown = (e) => {
   // 如果在输入框中，不处理快捷键
@@ -101,7 +77,32 @@ const handleKeydown = (e) => {
   }
 }
 
-document.addEventListener('keydown', handleKeydown)
+onMounted(() => {
+  // 处理分享链接：检查 URL 参数中是否有指定歌曲
+  // hash 路由格式：#/music?song=id
+  const hash = window.location.hash
+  const queryIndex = hash.indexOf('?')
+  if (queryIndex !== -1) {
+    const queryString = hash.substring(queryIndex + 1)
+    const urlParams = new URLSearchParams(queryString)
+    const songId = urlParams.get('song')
+    
+    if (songId) {
+      const sharedSong = audioPlayerStore.songs.find(s => s.id === parseInt(songId))
+      if (sharedSong) {
+        // 延迟播放，确保音频元素已初始化
+        setTimeout(() => {
+          playSong(sharedSong)
+        }, 100)
+      }
+      // 清除 URL 参数，保留路由路径
+      window.history.replaceState({}, '', window.location.pathname + '#/music')
+    }
+  }
+
+  // 注册键盘快捷键
+  document.addEventListener('keydown', handleKeydown)
+})
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
@@ -204,8 +205,8 @@ onUnmounted(() => {
               <input 
                 v-model="searchQuery"
                 type="text"
-                placeholder="搜索歌曲，所有字段均可筛选"
-                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-rose-500/50 transition-colors"
+                placeholder="搜索歌曲..."
+                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 pr-12 py-3 text-white placeholder-white/30 focus:outline-none focus:border-rose-500/50 transition-colors"
               />
               <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>

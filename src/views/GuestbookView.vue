@@ -1,30 +1,49 @@
 <script setup>
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const ARTALK_SERVER = import.meta.env.VITE_ARTALK_SERVER || ''
 const SITE_NAME = 'Starlight'
 
 let artalk = null
+const loadError = ref(false)
+const errorMessage = ref('')
 
 onMounted(() => {
   // Load Artalk CSS
   const link = document.createElement('link')
   link.rel = 'stylesheet'
   link.href = 'https://unpkg.com/artalk/dist/Artalk.css'
+  link.onerror = () => {
+    console.warn('Artalk CSS 加载失败')
+  }
   document.head.appendChild(link)
 
   // Load Artalk JS
   const script = document.createElement('script')
   script.src = 'https://unpkg.com/artalk/dist/Artalk.js'
   script.onload = () => {
-    artalk = Artalk.init({
-      el: '#artalk-comments',
-      server: ARTALK_SERVER,
-      site: SITE_NAME,
-      pageKey: '/guestbook',
-      pageTitle: '留言板',
-      darkMode: true
-    })
+    if (!ARTALK_SERVER) {
+      loadError.value = true
+      errorMessage.value = '评论系统未配置服务器地址'
+      return
+    }
+    try {
+      artalk = Artalk.init({
+        el: '#artalk-comments',
+        server: ARTALK_SERVER,
+        site: SITE_NAME,
+        pageKey: '/guestbook',
+        pageTitle: '留言板',
+        darkMode: true
+      })
+    } catch (err) {
+      loadError.value = true
+      errorMessage.value = '评论系统初始化失败：' + err.message
+    }
+  }
+  script.onerror = () => {
+    loadError.value = true
+    errorMessage.value = '评论系统加载失败，请刷新页面重试'
   }
   document.head.appendChild(script)
 })
@@ -55,7 +74,21 @@ onUnmounted(() => {
 
       <!-- Artalk Comments Container -->
       <div class="flex-grow animate-slide-up" style="animation-delay: 0.1s">
-        <div id="artalk-comments" class="artalk-container"></div>
+        <!-- Error State -->
+        <div v-if="loadError" class="flex flex-col items-center justify-center py-20 text-center">
+          <svg class="w-16 h-16 text-rose-400/50 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+          <p class="text-white/60 text-lg mb-2">{{ errorMessage }}</p>
+          <button 
+            @click="() => window.location.reload()" 
+            class="mt-4 px-6 py-2 rounded-full bg-white/10 text-white/80 hover:bg-white/20 transition-colors"
+          >
+            刷新页面
+          </button>
+        </div>
+        <!-- Normal State -->
+        <div v-else id="artalk-comments" class="artalk-container"></div>
       </div>
     </div>
   </div>
