@@ -244,7 +244,7 @@ onUnmounted(() => {
 }
 
 .bili-link {
-  @apply inline-flex items-center gap-2 text-sm transition-all duration-300 mt-4;
+  @apply inline-flex items-center gap-2 text-sm transition-all duration-300 mt-4 relative;
   color: rgba(255, 255, 255, 0.25);
 }
 
@@ -266,7 +266,7 @@ onUnmounted(() => {
 }
 
 .arrow {
-  @apply opacity-0 -translate-x-2 transition-all duration-300;
+  @apply opacity-0 transition-all duration-300 absolute -right-6;
 }
 
 /* 动画 */
