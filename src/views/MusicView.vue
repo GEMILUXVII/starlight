@@ -1,108 +1,54 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { computed, onMounted, onUnmounted, watch } from 'vue'
 import CoverArt from '../components/MusicPlayer/CoverArt.vue'
 import ProgressBar from '../components/MusicPlayer/ProgressBar.vue'
 import PlayerControls from '../components/MusicPlayer/PlayerControls.vue'
 import VolumeControl from '../components/MusicPlayer/VolumeControl.vue'
 import PlaybackModeControl from '../components/MusicPlayer/PlaybackModeControl.vue'
 import SongItem from '../components/MusicPlayer/SongItem.vue'
-import { songs as songsData } from '../data/songs.js'
-import { useAudioPlayer } from '../composables/useAudioPlayer.js'
-
-// 云存储配置（支持腾讯COS、Cloudflare R2等）
-const STORAGE_BASE_URL = import.meta.env.VITE_STORAGE_BASE_URL || ''
-
-// 获取完整的资源 URL
-const getAssetUrl = (path) => {
-  if (!path) return '/bg.webp'
-  if (path.startsWith('http')) return path
-  return STORAGE_BASE_URL ? `${STORAGE_BASE_URL}${path}` : path
-}
-
-// 音乐数据
-const songs = ref(songsData)
-
-// 搜索
-const searchQuery = ref('')
-const filteredSongs = computed(() => {
-  if (!searchQuery.value.trim()) return songs.value
-  const query = searchQuery.value.toLowerCase()
-  return songs.value.filter(song => 
-    song.title.toLowerCase().includes(query) ||
-    song.artist.toLowerCase().includes(query) ||
-    song.subtitle.toLowerCase().includes(query) ||
-    song.tags.some(tag => tag.toLowerCase().includes(query))
-  )
-})
-
-// 使用播放器 Composable
-const {
-  currentSong,
-  isPlaying,
-  currentTime,
-  duration,
-  volume,
-  audioRef,
-  playSong: playerPlaySong,
+import { 
+  audioPlayerStore,
+  playSong as storePlaySong,
   togglePlay,
+  playNext,
+  playPrev,
   seek,
   setVolume,
-  onTimeUpdate,
-  onLoadedMetadata,
-  onEnded: playerOnEnded,
-  initAudio
-} = useAudioPlayer(getAssetUrl)
+  setVolumeValue,
+  getAssetUrlFromStore
+} from '../stores/audioPlayerStore.js'
 
-// 封装播放函数
-const playSong = (song) => playerPlaySong(song, filteredSongs.value)
-const playNext = () => {
-  if (!currentSong.value) return
-  const currentIndex = filteredSongs.value.findIndex(s => s.id === currentSong.value.id)
-  const nextIndex = (currentIndex + 1) % filteredSongs.value.length
-  playSong(filteredSongs.value[nextIndex])
-}
-const playPrev = () => {
-  if (!currentSong.value) return
-  const currentIndex = filteredSongs.value.findIndex(s => s.id === currentSong.value.id)
-  const prevIndex = currentIndex === 0 ? filteredSongs.value.length - 1 : currentIndex - 1
-  playSong(filteredSongs.value[prevIndex])
-}
-
-// 播放模式: 'sequence' | 'repeat-one' | 'shuffle'
-const STORAGE_KEY_PLAYBACK_MODE = 'xingtong_player_mode'
-const savedMode = localStorage.getItem(STORAGE_KEY_PLAYBACK_MODE) || 'sequence'
-const playbackMode = ref(savedMode)
-
-// 监听播放模式变化并保存
-watch(playbackMode, (newMode) => {
-  localStorage.setItem(STORAGE_KEY_PLAYBACK_MODE, newMode)
+// 使用全局 store
+const currentSong = computed(() => audioPlayerStore.currentSong)
+const isPlaying = computed(() => audioPlayerStore.isPlaying)
+const currentTime = computed(() => audioPlayerStore.currentTime)
+const duration = computed(() => audioPlayerStore.duration)
+const volume = computed({
+  get: () => audioPlayerStore.volume,
+  set: (val) => { audioPlayerStore.volume = val }
+})
+const filteredSongs = computed(() => audioPlayerStore.filteredSongs)
+const searchQuery = computed({
+  get: () => audioPlayerStore.searchQuery,
+  set: (val) => { audioPlayerStore.searchQuery = val }
+})
+const playbackMode = computed({
+  get: () => audioPlayerStore.playbackMode,
+  set: (val) => { audioPlayerStore.playbackMode = val }
 })
 
-const onEnded = () => {
-  if (playbackMode.value === 'repeat-one') {
-    // 单曲循环：重置到开头并继续播放
-    if (audioRef.value) {
-      audioRef.value.currentTime = 0
-      audioRef.value.play()
-    }
-  } else if (playbackMode.value === 'shuffle') {
-    // 随机播放：排除当前歌曲，选择另一首
-    const otherSongs = filteredSongs.value.filter(s => s.id !== currentSong.value?.id)
-    if (otherSongs.length > 0) {
-      const randomIndex = Math.floor(Math.random() * otherSongs.length)
-      playSong(otherSongs[randomIndex])
-    } else {
-      playNext()
-    }
-  } else {
-    // 顺序播放
-    playNext()
-  }
+// 封装播放函数
+const playSong = (song) => storePlaySong(song)
+
+// 获取资源 URL
+const getAssetUrl = (path) => getAssetUrlFromStore(path)
+
+// 处理静音
+const handleMute = (v) => {
+  setVolumeValue(v)
 }
 
 onMounted(() => {
-  initAudio()
-  
   // 处理分享链接：检查 URL 参数中是否有指定歌曲
   // hash 路由格式：#/music?song=id
   const hash = window.location.hash
@@ -113,7 +59,7 @@ onMounted(() => {
     const songId = urlParams.get('song')
     
     if (songId) {
-      const sharedSong = songs.value.find(s => s.id === parseInt(songId))
+      const sharedSong = audioPlayerStore.songs.find(s => s.id === parseInt(songId))
       if (sharedSong) {
         // 延迟播放，确保音频元素已初始化
         setTimeout(() => {
@@ -146,13 +92,11 @@ const handleKeydown = (e) => {
       break
     case 'ArrowUp':
       e.preventDefault()
-      volume.value = Math.min(1, volume.value + 0.1)
-      if (audioRef.value) audioRef.value.volume = volume.value
+      setVolumeValue(Math.min(1, volume.value + 0.1))
       break
     case 'ArrowDown':
       e.preventDefault()
-      volume.value = Math.max(0, volume.value - 0.1)
-      if (audioRef.value) audioRef.value.volume = volume.value
+      setVolumeValue(Math.max(0, volume.value - 0.1))
       break
   }
 }
@@ -233,7 +177,7 @@ onUnmounted(() => {
               <VolumeControl
                 :volume="volume"
                 @change="setVolume"
-                @mute="(v) => { volume = v; if (audioRef) audioRef.volume = v }"
+                @mute="handleMute"
               />
               <PlaybackModeControl
                 :mode="playbackMode"
@@ -281,14 +225,6 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-
-    <!-- Hidden Audio Element -->
-    <audio 
-      ref="audioRef"
-      @timeupdate="onTimeUpdate"
-      @loadedmetadata="onLoadedMetadata"
-      @ended="onEnded"
-    ></audio>
   </div>
 </template>
 
