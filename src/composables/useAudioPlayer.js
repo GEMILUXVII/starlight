@@ -14,27 +14,44 @@ export function useAudioPlayer(getAssetUrl) {
   const audioRef = ref(null)
 
   // 播放控制
-  const playSong = (song, songsList) => {
-    if (currentSong.value?.id === song.id) {
+  const playSong = async (song, songsList, forceRestart = false) => {
+    if (currentSong.value?.id === song.id && !forceRestart) {
       togglePlay()
       return
     }
     currentSong.value = song
-    isPlaying.value = true
     if (audioRef.value) {
-      audioRef.value.src = getAssetUrl(song.audio)
-      audioRef.value.play()
+      // 如果是同一首歌，只需要重置时间
+      if (audioRef.value.src === getAssetUrl(song.audio) && forceRestart) {
+        audioRef.value.currentTime = 0
+      } else {
+        audioRef.value.src = getAssetUrl(song.audio)
+      }
+      try {
+        await audioRef.value.play()
+        isPlaying.value = true
+      } catch (err) {
+        // 浏览器阻止自动播放，需要用户交互
+        console.warn('自动播放被阻止，需要用户点击播放:', err.message)
+        isPlaying.value = false
+      }
     }
   }
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (!audioRef.value || !currentSong.value) return
     if (isPlaying.value) {
       audioRef.value.pause()
+      isPlaying.value = false
     } else {
-      audioRef.value.play()
+      try {
+        await audioRef.value.play()
+        isPlaying.value = true
+      } catch (err) {
+        console.warn('播放失败:', err.message)
+        isPlaying.value = false
+      }
     }
-    isPlaying.value = !isPlaying.value
   }
 
   const seek = (e) => {
@@ -62,14 +79,18 @@ export function useAudioPlayer(getAssetUrl) {
     if (!currentSong.value || !songsList.length) return
     const currentIndex = songsList.findIndex(s => s.id === currentSong.value.id)
     const nextIndex = (currentIndex + 1) % songsList.length
-    playSong(songsList[nextIndex], songsList)
+    // 如果只有一首歌，强制重新播放
+    const forceRestart = songsList.length === 1
+    playSong(songsList[nextIndex], songsList, forceRestart)
   }
 
   const playPrev = (songsList) => {
     if (!currentSong.value || !songsList.length) return
     const currentIndex = songsList.findIndex(s => s.id === currentSong.value.id)
     const prevIndex = currentIndex === 0 ? songsList.length - 1 : currentIndex - 1
-    playSong(songsList[prevIndex], songsList)
+    // 如果只有一首歌，强制重新播放
+    const forceRestart = songsList.length === 1
+    playSong(songsList[prevIndex], songsList, forceRestart)
   }
 
   // 音频事件处理
