@@ -5,14 +5,14 @@ import SongItem from '../components/MusicPlayer/SongItem.vue'
 import { songs as songsData } from '../data/songs.js'
 import { useAudioPlayer } from '../composables/useAudioPlayer.js'
 
-// 腾讯云 COS 存储桶配置
-const COS_BASE_URL = import.meta.env.VITE_COS_BASE_URL || ''
+// 云存储配置（支持腾讯COS、Cloudflare R2等）
+const STORAGE_BASE_URL = import.meta.env.VITE_STORAGE_BASE_URL || ''
 
 // 获取完整的资源 URL
 const getAssetUrl = (path) => {
   if (!path) return '/bg.webp'
   if (path.startsWith('http')) return path
-  return COS_BASE_URL ? `${COS_BASE_URL}${path}` : path
+  return STORAGE_BASE_URL ? `${STORAGE_BASE_URL}${path}` : path
 }
 
 // 音乐数据
