@@ -93,11 +93,13 @@ const biliUser = ref({
         </div>
       </div>
 
-      <!-- Footer (Kept same content, adjusted style) -->
-      <footer class="mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/40 animate-fade-in">
-        <p class="font-mono">© 2025 <a href="https://github.com/GEMILUXVII" target="_blank" class="text-white/60 hover:text-white transition-colors">GEMILUXVII</a></p>
-        <p class="font-mono">
-          POWERED BY VUE & <a href="https://github.com/GEMILUXVII/starlight" target="_blank" class="text-white/60 hover:text-white transition-colors">STARLIGHT</a>
+      <!-- Footer -->
+      <footer class="mt-20 pt-8 border-t border-white/10 animate-fade-in text-center">
+        <p class="text-sm text-white/30 font-mono mb-2">POWERED BY Vue 3 / Vite / TailwindCSS</p>
+        <p class="text-sm text-white/40 font-mono">
+          © 2025 <a href="https://github.com/GEMILUXVII" target="_blank" class="text-white/60 hover:text-white transition-colors">GEMILUXVII</a>
+          · 
+          <a href="https://github.com/GEMILUXVII/starlight" target="_blank" class="text-white/60 hover:text-white transition-colors">STARLIGHT</a>
         </p>
       </footer>
     </div>
