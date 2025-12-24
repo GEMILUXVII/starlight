@@ -4,6 +4,7 @@ import CoverArt from '../components/MusicPlayer/CoverArt.vue'
 import ProgressBar from '../components/MusicPlayer/ProgressBar.vue'
 import PlayerControls from '../components/MusicPlayer/PlayerControls.vue'
 import VolumeControl from '../components/MusicPlayer/VolumeControl.vue'
+import PlaybackModeControl from '../components/MusicPlayer/PlaybackModeControl.vue'
 import SongItem from '../components/MusicPlayer/SongItem.vue'
 import { songs as songsData } from '../data/songs.js'
 import { useAudioPlayer } from '../composables/useAudioPlayer.js'
@@ -66,7 +67,30 @@ const playPrev = () => {
   const prevIndex = currentIndex === 0 ? filteredSongs.value.length - 1 : currentIndex - 1
   playSong(filteredSongs.value[prevIndex])
 }
-const onEnded = () => playNext()
+// 播放模式: 'sequence' | 'repeat-one' | 'shuffle'
+const playbackMode = ref('sequence')
+
+const onEnded = () => {
+  if (playbackMode.value === 'repeat-one') {
+    // 单曲循环：重置到开头并继续播放
+    if (audioRef.value) {
+      audioRef.value.currentTime = 0
+      audioRef.value.play()
+    }
+  } else if (playbackMode.value === 'shuffle') {
+    // 随机播放：排除当前歌曲，选择另一首
+    const otherSongs = filteredSongs.value.filter(s => s.id !== currentSong.value?.id)
+    if (otherSongs.length > 0) {
+      const randomIndex = Math.floor(Math.random() * otherSongs.length)
+      playSong(otherSongs[randomIndex])
+    } else {
+      playNext()
+    }
+  } else {
+    // 顺序播放
+    playNext()
+  }
+}
 
 onMounted(() => initAudio())
 </script>
@@ -135,11 +159,15 @@ onMounted(() => initAudio())
               />
             </div>
 
-            <!-- Volume Control -->
-            <div class="mt-6 flex justify-center">
+            <!-- Volume & Playback Mode Row -->
+            <div class="mt-6 flex items-center justify-between">
               <VolumeControl
                 :volume="volume"
                 @change="setVolume"
+              />
+              <PlaybackModeControl
+                :mode="playbackMode"
+                @change="(m) => playbackMode = m"
               />
             </div>
           </div>
