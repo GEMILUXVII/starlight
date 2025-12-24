@@ -1,16 +1,22 @@
-import { ref, computed } from 'vue'
+import { ref, watch } from 'vue'
+
+// localStorage keys
+const STORAGE_KEY_VOLUME = 'xingtong_player_volume'
 
 /**
  * 音乐播放器 Composable
  * 管理播放状态、音量、进度和播放控制
  */
 export function useAudioPlayer(getAssetUrl) {
+  // 从 localStorage 读取保存的音量，默认 0.8
+  const savedVolume = parseFloat(localStorage.getItem(STORAGE_KEY_VOLUME) || '0.8')
+
   // 播放器状态
   const currentSong = ref(null)
   const isPlaying = ref(false)
   const currentTime = ref(0)
   const duration = ref(0)
-  const volume = ref(0.8)
+  const volume = ref(savedVolume)
   const audioRef = ref(null)
 
   // 播放控制
@@ -66,6 +72,8 @@ export function useAudioPlayer(getAssetUrl) {
     const percent = (e.clientX - rect.left) / rect.width
     volume.value = Math.max(0, Math.min(1, percent))
     if (audioRef.value) audioRef.value.volume = volume.value
+    // 保存到 localStorage
+    localStorage.setItem(STORAGE_KEY_VOLUME, volume.value.toString())
   }
 
   const formatTime = (seconds) => {

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import CoverArt from '../components/MusicPlayer/CoverArt.vue'
 import ProgressBar from '../components/MusicPlayer/ProgressBar.vue'
 import PlayerControls from '../components/MusicPlayer/PlayerControls.vue'
@@ -67,8 +67,16 @@ const playPrev = () => {
   const prevIndex = currentIndex === 0 ? filteredSongs.value.length - 1 : currentIndex - 1
   playSong(filteredSongs.value[prevIndex])
 }
+
 // 播放模式: 'sequence' | 'repeat-one' | 'shuffle'
-const playbackMode = ref('sequence')
+const STORAGE_KEY_PLAYBACK_MODE = 'xingtong_player_mode'
+const savedMode = localStorage.getItem(STORAGE_KEY_PLAYBACK_MODE) || 'sequence'
+const playbackMode = ref(savedMode)
+
+// 监听播放模式变化并保存
+watch(playbackMode, (newMode) => {
+  localStorage.setItem(STORAGE_KEY_PLAYBACK_MODE, newMode)
+})
 
 const onEnded = () => {
   if (playbackMode.value === 'repeat-one') {
@@ -116,6 +124,43 @@ onMounted(() => {
       window.history.replaceState({}, '', window.location.pathname + '#/music')
     }
   }
+})
+
+// 键盘快捷键
+const handleKeydown = (e) => {
+  // 如果在输入框中，不处理快捷键
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return
+  
+  switch (e.code) {
+    case 'Space':
+      e.preventDefault()
+      if (currentSong.value) togglePlay()
+      break
+    case 'ArrowLeft':
+      e.preventDefault()
+      playPrev()
+      break
+    case 'ArrowRight':
+      e.preventDefault()
+      playNext()
+      break
+    case 'ArrowUp':
+      e.preventDefault()
+      volume.value = Math.min(1, volume.value + 0.1)
+      if (audioRef.value) audioRef.value.volume = volume.value
+      break
+    case 'ArrowDown':
+      e.preventDefault()
+      volume.value = Math.max(0, volume.value - 0.1)
+      if (audioRef.value) audioRef.value.volume = volume.value
+      break
+  }
+}
+
+document.addEventListener('keydown', handleKeydown)
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeydown)
 })
 </script>
 
@@ -188,6 +233,7 @@ onMounted(() => {
               <VolumeControl
                 :volume="volume"
                 @change="setVolume"
+                @mute="(v) => { volume = v; if (audioRef) audioRef.volume = v }"
               />
               <PlaybackModeControl
                 :mode="playbackMode"
@@ -247,24 +293,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.animate-slide-in {
-  animation: slideIn 0.6s ease-out forwards;
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
-}
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
+/* Animations defined globally in main.css */
 .song-item {
   /* hardware acceleration for smoother transitions */
   transform: translateZ(0);
