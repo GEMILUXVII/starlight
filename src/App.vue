@@ -1,12 +1,33 @@
 <script setup>
 import { onMounted, computed, ref, watch } from 'vue'
 import { RouterView, RouterLink, useRoute } from 'vue-router'
-// Vercel Analytics removed - site is self-hosted
 import { OverlayScrollbars } from 'overlayscrollbars'
 import 'overlayscrollbars/overlayscrollbars.css'
+import MiniPlayer from './components/MiniPlayer.vue'
+import { 
+  audioPlayerStore, 
+  initAudio, 
+  handleEnded 
+} from './stores/audioPlayerStore.js'
 
 // 移动端菜单状态
 const menuOpen = ref(false)
+
+// 全局音频元素引用
+const globalAudioRef = ref(null)
+
+// 音频事件处理
+const onTimeUpdate = () => {
+  if (globalAudioRef.value) {
+    audioPlayerStore.currentTime = globalAudioRef.value.currentTime
+  }
+}
+
+const onLoadedMetadata = () => {
+  if (globalAudioRef.value) {
+    audioPlayerStore.duration = globalAudioRef.value.duration
+  }
+}
 
 // 交互式粒子系统
 class ParticleSystem {
@@ -134,11 +155,17 @@ onMounted(() => {
   // Preload bg2.webp for smooth transition
   const preloadImg = new Image()
   preloadImg.src = '/bg2.webp'
+
+  // 初始化全局音频播放器
+  if (globalAudioRef.value) {
+    initAudio(globalAudioRef.value)
+  }
 })
 
 const route = useRoute()
 const isTimeline = computed(() => route.name === 'timeline')
 const isHome = computed(() => route.name === 'home')
+const isMusic = computed(() => route.name === 'music')
 
 // 路由变化时自动关闭菜单
 watch(() => route.path, () => {
@@ -283,6 +310,17 @@ watch(() => route.path, () => {
     <!-- Router View -->
     <RouterView />
   </main>
+
+  <!-- Global Audio Element -->
+  <audio 
+    ref="globalAudioRef"
+    @timeupdate="onTimeUpdate"
+    @loadedmetadata="onLoadedMetadata"
+    @ended="handleEnded"
+  ></audio>
+
+  <!-- Mini Player (shows when not on music page) -->
+  <MiniPlayer v-if="!isMusic" />
 </template>
 
 <style>

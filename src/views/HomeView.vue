@@ -1,43 +1,6 @@
 <script setup>
 import CountdownCard from '../components/CountdownCard.vue'
-
-const events = [
-  {
-    id: 'birthday',
-    title: '生日',
-    month: 10,
-    day: 21,
-    accent: 'rose',
-    description: '星瞳生日'
-  },
-  {
-    id: 'debut',
-    title: '出道纪念',
-    month: 6,
-    day: 11,
-    year: 2021,
-    accent: 'violet',
-    description: 'B站直播出道'
-  },
-  {
-    id: 'valentine',
-    title: '情人节',
-    month: 2,
-    day: 14,
-    accent: 'cyan',
-    description: '情人节'
-  },
-  {
-    id: 'anniversary',
-    title: '5周年',
-    month: 6,
-    day: 11,
-    year: 2021,
-    showYears: true,
-    accent: 'amber',
-    description: '出道周年'
-  }
-]
+import { events } from '../data/events.js'
 </script>
 
 <template>
@@ -83,22 +46,4 @@ const events = [
   </div>
 </template>
 
-<style scoped>
-.animate-fade-in-down {
-  animation: fadeInDown 0.8s ease-out backwards;
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out backwards;
-}
-
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-</style>
+<!-- Animations defined in main.css -->
