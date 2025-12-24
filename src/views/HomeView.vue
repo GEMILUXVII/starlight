@@ -1,49 +1,78 @@
 <script setup>
-import CountdownCard from '../components/CountdownCard.vue'
+import PageHeader from '../components/home/PageHeader.vue'
+import CountdownSection from '../components/home/CountdownSection.vue'
+import SocialLinks from '../components/home/SocialLinks.vue'
 import { events } from '../data/events.js'
 </script>
 
 <template>
-  <div class="home-container w-full max-w-[1920px] mx-auto px-2 sm:px-4 md:px-8 py-6 md:py-12 flex flex-col h-screen overflow-hidden relative z-10">
-    <!-- Header aligned to top-left -->
-    <header class="header text-center md:text-left animate-fade-in-down">
-      <h1 class="text-4xl sm:text-5xl md:text-6xl font-thin tracking-tighter text-white mb-2 drop-shadow-lg">
-        <span class="text-rose-400">✦</span>
-        XINGTONG
-        <span class="text-rose-400">✦</span>
-      </h1>
-      <p class="text-[10px] sm:text-xs tracking-[0.3em] sm:tracking-[0.5em] text-white/60 uppercase text-shadow md:pl-2">星星的星 闪耀双瞳的瞳</p>
-    </header>
-    
-    <!-- Main content area -->
-    <div class="flex-1 flex flex-col md:flex-row md:items-end md:justify-between mt-4 md:mt-auto gap-4 md:gap-0">
-      <!-- Countdown Cards - on mobile shows first (order reversed via flex) -->
-      <section class="w-full md:w-auto lg:w-[400px] flex flex-col gap-3 md:gap-6 animate-fade-in-up order-1 md:order-2 flex-shrink-0">
-        <CountdownCard 
-          v-for="(event, index) in events" 
-          :key="event.id"
-          :event="event"
-          :style="{ animationDelay: `${index * 0.1}s` }"
-        />
-      </section>
-
-      <!-- Bilibili Link - bottom on mobile -->
-      <footer class="footer animate-fade-in-up pb-1 order-2 md:order-1 text-center md:text-left mt-auto md:mt-0">
-        <a 
-          href="https://space.bilibili.com/401315430" 
-          target="_blank" 
-          rel="noopener" 
-          class="inline-flex items-center gap-2 text-white/30 hover:text-white/80 transition-colors text-sm group"
-        >
-          <svg class="w-5 h-5 group-hover:text-[#FB7299] transition-colors" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.659.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906l-1.174 1.12z"/>
-          </svg>
-          <span>前往 B站 主页</span>
-          <span class="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">→</span>
-        </a>
-      </footer>
+  <div class="home-container">
+    <!-- 左侧内容区 -->
+    <div class="content-left">
+      <PageHeader />
+      
+      <!-- 分隔线 -->
+      <div class="divider"></div>
+      
+      <!-- 倒计时区域 -->
+      <CountdownSection :events="events" />
+      
+      <!-- 底部链接 -->
+      <div class="footer-area">
+        <SocialLinks />
+      </div>
     </div>
   </div>
 </template>
 
-<!-- Animations defined in main.css -->
+<style scoped>
+.home-container {
+  @apply w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-12;
+  @apply flex flex-col h-full relative z-10;
+}
+
+.content-left {
+  @apply flex flex-col h-full;
+  max-width: 480px;
+}
+
+/* 分隔线 */
+.divider {
+  @apply w-full h-px my-6 md:my-8;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.15) 0%, 
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  animation: expandLine 0.8s ease-out 0.3s backwards;
+}
+
+.footer-area {
+  @apply mt-auto pt-6 md:pt-8;
+}
+
+@keyframes expandLine {
+  from {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  to {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .content-left {
+    @apply max-w-full text-center items-center;
+  }
+  
+  .divider {
+    background: linear-gradient(90deg, 
+      rgba(255, 255, 255, 0.05) 0%, 
+      rgba(255, 255, 255, 0.15) 50%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+  }
+}
+</style>
