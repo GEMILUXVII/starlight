@@ -109,12 +109,18 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="music-player-container relative w-full min-h-screen overflow-hidden">
+  <div 
+    class="music-player-container relative w-full overflow-hidden"
+    :class="currentSong ? 'h-screen' : 'min-h-screen'"
+  >
     <!-- Background Overlay -->
     <div class="absolute inset-0 bg-black/60 backdrop-blur-xl"></div>
 
     <!-- Main Content Container -->
-    <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+    <div 
+      class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12"
+      :class="currentSong ? 'h-full flex flex-col' : ''"
+    >
       <!-- Header -->
       <header class="mb-8 md:mb-10 animate-slide-in">
         <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/20 uppercase">
@@ -129,7 +135,7 @@ onUnmounted(() => {
       <!-- Dynamic Layout: Split when playing, centered when not -->
       <div :class="[
         'transition-all duration-500 ease-out',
-        currentSong ? 'grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12' : 'flex flex-col items-center'
+        currentSong ? 'grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 flex-1 min-h-0' : 'flex flex-col items-center'
       ]">
         
         <!-- Left Side: Player (only when song is selected) -->
@@ -188,7 +194,11 @@ onUnmounted(() => {
         </div>
 
         <!-- Right Side: Song List -->
-        <div :class="currentSong ? 'w-full' : 'w-full max-w-2xl'">
+        <div 
+          :class="[
+            currentSong ? 'w-full flex flex-col min-h-0' : 'w-full max-w-2xl'
+          ]"
+        >
           <!-- Search Bar -->
           <div class="mb-6 flex items-center gap-4">
             <div class="flex-1 relative">
@@ -206,7 +216,12 @@ onUnmounted(() => {
           </div>
 
           <!-- Song List -->
-          <div class="space-y-3">
+          <div 
+            :class="[
+              'space-y-3',
+              currentSong ? 'flex-1 overflow-y-auto pr-2 song-list-scroll' : ''
+            ]"
+          >
             <SongItem
               v-for="song in filteredSongs"
               :key="song.id"
@@ -233,5 +248,37 @@ onUnmounted(() => {
 .song-item {
   /* hardware acceleration for smoother transitions */
   transform: translateZ(0);
+}
+
+/* Custom scrollbar for song list */
+.song-list-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.song-list-scroll:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.song-list-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.song-list-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.song-list-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 3px;
+  transition: background-color 0.3s;
+}
+
+.song-list-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.song-list-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.4);
 }
 </style>
