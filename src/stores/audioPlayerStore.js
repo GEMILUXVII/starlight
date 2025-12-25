@@ -24,8 +24,10 @@ const savedMode = localStorage.getItem(STORAGE_KEY_PLAYBACK_MODE) || 'sequence'
  * 使用 reactive 对象保持状态在路由切换时不丢失
  */
 export const audioPlayerStore = reactive({
-  // 歌曲数据
-  songs: songsData,
+  // 歌曲数据（按日期降序排列，新的在前，自动生成ID）
+  songs: [...songsData]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .map((song, index) => ({ ...song, id: index + 1 })),
 
   // 播放状态
   currentSong: null,
@@ -113,10 +115,23 @@ export function playNext() {
   if (!store.currentSong) return
 
   const songs = store.filteredSongs
+  const forceRestart = songs.length === 1
+
+  // 随机模式：播放随机歌曲
+  if (store.playbackMode === 'shuffle') {
+    const otherSongs = songs.filter(s => s.id !== store.currentSong.id)
+    if (otherSongs.length > 0) {
+      const randomIndex = Math.floor(Math.random() * otherSongs.length)
+      playSong(otherSongs[randomIndex], forceRestart)
+    } else {
+      playSong(songs[0], true)
+    }
+    return
+  }
+
+  // 顺序模式：播放下一首
   const currentIndex = songs.findIndex(s => s.id === store.currentSong.id)
   const nextIndex = (currentIndex + 1) % songs.length
-
-  const forceRestart = songs.length === 1
   playSong(songs[nextIndex], forceRestart)
 }
 
@@ -125,10 +140,23 @@ export function playPrev() {
   if (!store.currentSong) return
 
   const songs = store.filteredSongs
+  const forceRestart = songs.length === 1
+
+  // 随机模式：播放随机歌曲
+  if (store.playbackMode === 'shuffle') {
+    const otherSongs = songs.filter(s => s.id !== store.currentSong.id)
+    if (otherSongs.length > 0) {
+      const randomIndex = Math.floor(Math.random() * otherSongs.length)
+      playSong(otherSongs[randomIndex], forceRestart)
+    } else {
+      playSong(songs[0], true)
+    }
+    return
+  }
+
+  // 顺序模式：播放上一首
   const currentIndex = songs.findIndex(s => s.id === store.currentSong.id)
   const prevIndex = currentIndex === 0 ? songs.length - 1 : currentIndex - 1
-
-  const forceRestart = songs.length === 1
   playSong(songs[prevIndex], forceRestart)
 }
 
