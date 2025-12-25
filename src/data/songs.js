@@ -15,7 +15,6 @@
  */
 export const songs = [
   {
-    id: 1,
     title: '红山果',
     subtitle: '安与骑兵',
     artist: '星瞳',
@@ -25,7 +24,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 2,
     title: '我所有的夜有所梦里',
     subtitle: 'ZaZaZsu咂咂苏',
     artist: '星瞳',
@@ -35,7 +33,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 3,
     title: '情歌',
     subtitle: '梁静茹',
     artist: '星瞳',
@@ -45,7 +42,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 4,
     title: '成都',
     subtitle: '赵雷',
     artist: '星瞳',
@@ -55,7 +51,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 5,
     title: '没那么简单',
     subtitle: '黄小琥',
     artist: '星瞳',
@@ -65,7 +60,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 6,
     title: '不能说的秘密',
     subtitle: '周杰伦',
     artist: '星瞳',
@@ -75,7 +69,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 7,
     title: '我只在乎你',
     subtitle: '邓丽君',
     artist: '星瞳',
@@ -85,7 +78,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 8,
     title: '如果这就是爱情',
     subtitle: '张靓颖',
     artist: '星瞳',
@@ -95,7 +87,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 9,
     title: '恰似你的温柔',
     subtitle: '蔡琴',
     artist: '星瞳',
@@ -105,7 +96,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 10,
     title: '光年之外',
     subtitle: '邓紫棋',
     artist: '星瞳',
@@ -115,7 +105,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 11,
     title: '勾指起誓',
     subtitle: '洛天依/ilem',
     artist: '星瞳',
@@ -125,7 +114,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 12,
     title: '听',
     subtitle: '张紫宁/游戏科学/8082Audio',
     artist: '星瞳',
@@ -135,7 +123,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 13,
     title: '圣诞星',
     subtitle: '周杰伦',
     artist: '星瞳',
@@ -145,7 +132,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    id: 14,
     title: '这世界那么多人',
     subtitle: '莫文蔚',
     artist: '星瞳',
