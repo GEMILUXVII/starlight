@@ -1402,7 +1402,7 @@ export const songs = [
   },
   {
     title: '甜甜的',
-    subtitle: '周杰伦',
+    subtitle: '丁芙妮',
     artist: '星瞳',
     date: '2024-03-08',
     cover: '/covers/甜甜的.jpg',
