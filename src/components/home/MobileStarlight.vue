@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { getCountdown, getDisplayTitle } from '../../composables/useCountdown.js'
 
 const props = defineProps({
   events: {
@@ -19,36 +20,6 @@ const accentColors = {
   violet: '#a78bfa',
   cyan: '#22d3ee',
   amber: '#fbbf24'
-}
-
-function getCountdown(event) {
-  const now = new Date()
-  const currentYear = now.getFullYear()
-  let targetDate = new Date(currentYear, event.month - 1, event.day, 0, 0, 0, 0)
-  if (now > targetDate) {
-    targetDate = new Date(currentYear + 1, event.month - 1, event.day, 0, 0, 0, 0)
-  }
-  
-  const diff = targetDate - now
-  if (diff <= 0) return { days: 0, isToday: true }
-  
-  return {
-    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-    isToday: false
-  }
-}
-
-function getDisplayTitle(event) {
-  if (event.showYears && event.year) {
-    const now = new Date()
-    const currentYear = now.getFullYear()
-    let targetDate = new Date(currentYear, event.month - 1, event.day)
-    if (now > targetDate) {
-      targetDate = new Date(currentYear + 1, event.month - 1, event.day)
-    }
-    return `${targetDate.getFullYear() - event.year}周年`
-  }
-  return event.title
 }
 
 function nextEvent() {

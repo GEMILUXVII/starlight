@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { getFullCountdown, getDisplayTitle as getDisplayTitleUtil } from '../composables/useCountdown.js'
 
 const props = defineProps({
   event: {
@@ -14,30 +15,6 @@ const minutes = ref('00')
 const statusText = ref('')
 const isToday = ref(false)
 const hasCelebrated = ref(false)
-
-// 倒计时逻辑
-function getNextTargetDate(month, day) {
-  const now = new Date()
-  const currentYear = now.getFullYear()
-  let targetDate = new Date(currentYear, month - 1, day, 0, 0, 0, 0)
-  if (now > targetDate) {
-    targetDate = new Date(currentYear + 1, month - 1, day, 0, 0, 0, 0)
-  }
-  return targetDate
-}
-
-function getTimeDiff(targetDate) {
-  const now = new Date()
-  const diff = targetDate - now
-  if (diff <= 0) return { days: 0, hours: 0, minutes: 0, isToday: true }
-  
-  return {
-    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-    hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-    minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
-    isToday: false
-  }
-}
 
 function animateCount(target, currentRef) {
   const start = 0
@@ -57,10 +34,9 @@ function animateCount(target, currentRef) {
 }
 
 function updateCountdown(animate = false) {
-  const targetDate = getNextTargetDate(props.event.month, props.event.day)
-  const diff = getTimeDiff(targetDate)
+  const countdown = getFullCountdown(props.event)
   
-  isToday.value = diff.isToday
+  isToday.value = countdown.isToday
   
   if (isToday.value) {
     days.value = '00'
@@ -74,17 +50,17 @@ function updateCountdown(animate = false) {
   } else {
     // 首次加载动画
     if (animate) {
-      animateCount(diff.days, days)
-      animateCount(diff.hours, hours)
-      animateCount(diff.minutes, minutes)
+      animateCount(countdown.days, days)
+      animateCount(countdown.hours, hours)
+      animateCount(countdown.minutes, minutes)
     } else {
-      days.value = String(diff.days).padStart(2, '0')
-      hours.value = String(diff.hours).padStart(2, '0')
-      minutes.value = String(diff.minutes).padStart(2, '0')
+      days.value = String(countdown.days).padStart(2, '0')
+      hours.value = String(countdown.hours).padStart(2, '0')
+      minutes.value = String(countdown.minutes).padStart(2, '0')
     }
     
-    const targetYear = targetDate.getFullYear()
-    statusText.value = `${targetYear}年 · 距离还有 ${diff.days} 天`
+    const targetYear = countdown.targetDate.getFullYear()
+    statusText.value = `${targetYear}年 · 距离还有 ${countdown.days} 天`
   }
 }
 
@@ -105,11 +81,7 @@ const badgeText = computed(() => {
 })
 
 const displayTitle = computed(() => {
-  if (props.event.showYears && props.event.year) {
-    const targetDate = getNextTargetDate(props.event.month, props.event.day)
-    return `${targetDate.getFullYear() - props.event.year}周年`
-  }
-  return props.event.title
+  return getDisplayTitleUtil(props.event)
 })
 
 const accentClass = computed(() => {
