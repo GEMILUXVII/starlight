@@ -51,15 +51,6 @@ export const songs = [
     tags: ['翻唱']
   },
   {
-    title: '没那么简单',
-    subtitle: '黄小琥',
-    artist: '星瞳',
-    date: '2024-01-09',
-    cover: '/covers/没那么简单.jpg',
-    audio: '/audio/没那么简单.mp3',
-    tags: ['翻唱']
-  },
-  {
     title: '不能说的秘密',
     subtitle: '周杰伦',
     artist: '星瞳',
@@ -1020,15 +1011,6 @@ export const songs = [
     date: '2023-10-17',
     cover: '/covers/愿得一人心.jpg',
     audio: '/audio/愿得一人心.mp3',
-    tags: ['翻唱'],
-  },
-  {
-    title: '成都',
-    subtitle: '赵雷',
-    artist: '星瞳',
-    date: '2024-01-06',
-    cover: '/covers/成都.jpg',
-    audio: '/audio/成都.mp3',
     tags: ['翻唱'],
   },
   {
