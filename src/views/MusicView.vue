@@ -79,25 +79,33 @@ const handleKeydown = (e) => {
 
 onMounted(() => {
   // 处理分享链接：检查 URL 参数中是否有指定歌曲
-  // hash 路由格式：#/music?song=id
+  // 支持新格式 ?s=短码 和旧格式 ?song=标题
   const hash = window.location.hash
   const queryIndex = hash.indexOf('?')
   if (queryIndex !== -1) {
     const queryString = hash.substring(queryIndex + 1)
     const urlParams = new URLSearchParams(queryString)
+    
+    // 优先使用短码参数 's'
+    const shortCode = urlParams.get('s')
     const songId = urlParams.get('song')
     
-    if (songId) {
-      const sharedSong = audioPlayerStore.songs.find(s => s.id === parseInt(songId))
-      if (sharedSong) {
-        // 延迟播放，确保音频元素已初始化
-        setTimeout(() => {
-          playSong(sharedSong)
-        }, 100)
-      }
-      // 清除 URL 参数，保留路由路径
-      window.history.replaceState({}, '', window.location.pathname + '#/music')
+    let sharedSong = null
+    if (shortCode) {
+      sharedSong = audioPlayerStore.songs.find(s => s.code === shortCode)
+    } else if (songId) {
+      // 兼容旧链接
+      sharedSong = audioPlayerStore.songs.find(s => s.id === decodeURIComponent(songId))
     }
+    
+    if (sharedSong) {
+      // 延迟播放，确保音频元素已初始化
+      setTimeout(() => {
+        playSong(sharedSong)
+      }, 100)
+    }
+    // 清除 URL 参数，保留路由路径
+    window.history.replaceState({}, '', window.location.pathname + '#/music')
   }
 
   // 注册键盘快捷键

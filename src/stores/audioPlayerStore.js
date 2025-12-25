@@ -20,14 +20,35 @@ const savedVolume = parseFloat(localStorage.getItem(STORAGE_KEY_VOLUME) || '0.8'
 const savedMode = localStorage.getItem(STORAGE_KEY_PLAYBACK_MODE) || 'sequence'
 
 /**
+ * 生成稳定的短码（基于标题的 hash）
+ * 同一标题永远生成相同的短码
+ */
+function generateShortCode(str) {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32bit integer
+  }
+  // 转换为 base36 并取 4-5 位
+  return Math.abs(hash).toString(36).slice(0, 5)
+}
+
+/**
  * 全局音频播放器状态
  * 使用 reactive 对象保持状态在路由切换时不丢失
  */
 export const audioPlayerStore = reactive({
-  // 歌曲数据（按日期降序排列，新的在前，自动生成ID）
+  // 歌曲数据（按日期降序排列，新的在前）
+  // id: 标题（用于内部匹配）
+  // code: 短码（用于分享链接）
   songs: [...songsData]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .map((song, index) => ({ ...song, id: index + 1 })),
+    .map(song => ({
+      ...song,
+      id: song.title,
+      code: generateShortCode(song.title)
+    })),
 
   // 播放状态
   currentSong: null,
